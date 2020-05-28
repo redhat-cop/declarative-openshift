@@ -7,6 +7,6 @@ metadata:
     example.com/scm-url: git@github.com:redhat-cop/declarative-openshift.git
   labels:
     example.com/project: simple-bootstrap
-    example.com/component: rbac
+    example.com/component: namespaces
   name: namespace-operator
 spec:

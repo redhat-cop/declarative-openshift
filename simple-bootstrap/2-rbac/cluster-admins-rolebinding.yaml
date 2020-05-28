@@ -7,7 +7,7 @@ metadata:
     example.com/scm-url: git@github.com:redhat-cop/declarative-openshift.git
   labels:
     example.com/project: simple-bootstrap
-    example.com/component: cluster-rbac
+    example.com/component: rbac
   name: cluster-administrators
 roleRef:
   apiGroup: rbac.authorization.k8s.io
