@@ -1,0 +1,14 @@
+apiVersion: argoproj.io/v1alpha1
+kind: ArgoCD
+metadata:
+  annotations:
+    example.com/managed-by: gitops
+    example.com/scm-url: git@github.com:redhat-cop/declarative-openshift.git
+  labels:
+    example: basic
+    example.com/component: operators
+    example.com/project: argocd-bootstrap
+  name: example-argocd
+spec:
+  server:
+    route: true
