@@ -18,6 +18,6 @@ $ oc apply -Rf ../logging-bootstrap/ --prune -l example.com/project=logging-boot
 Note that the creation of the clusterlogging object may fail. This is because its CRD did not exist quite yet. If you rerun the command, then it should succeed
 ```
 
-## Phase one stops here (note this was a 4.2 install)
+##Phase one stops here (note this was a 4.2 install)
 
-## TODO Try deploying 4.4 operator with base install with new tech-preview CR's
+##TODO Try deploying 4.4 operator with base install with new tech-preview CR's
