@@ -19,13 +19,16 @@ The `apply` command idempotently ensures that the live configuration is in sync 
 
 As an example, let's bootstrap our cluster for the first time:
 
+> :exclamation: The first time you run this command, you will get an error applying the `userconfig`. This is because there is a [race condition created when deploying operators through OLM](https://github.com/redhat-cop/declarative-openshift/issues/14). As a workaround, just run the command again until it succeeds.
+
 ```
 $ oc apply -Rf simple-bootstrap/ --prune -l example.com/project=simple-bootstrap
-namespace/deleteable created
-namespace/namespace-operator created
-operatorgroup.operators.coreos.com/namespace-operator created
-subscription.operators.coreos.com/namespace-configuration-operator created
-clusterrolebinding.rbac.authorization.k8s.io/cluster-administrators created
+namespace/deleteable configured
+namespace/namespace-operator configured
+operatorgroup.operators.coreos.com/namespace-operator unchanged
+subscription.operators.coreos.com/namespace-configuration-operator unchanged
+clusterrolebinding.rbac.authorization.k8s.io/cluster-administrators unchanged
+userconfig.redhatcop.redhat.io/sandboxes created
 ```
 
 Now, let's remove a namespace and re-run the same command:
@@ -38,7 +41,20 @@ namespace/namespace-operator configured
 operatorgroup.operators.coreos.com/namespace-operator unchanged
 subscription.operators.coreos.com/namespace-configuration-operator unchanged
 clusterrolebinding.rbac.authorization.k8s.io/cluster-administrators unchanged
+userconfig.redhatcop.redhat.io/sandboxes unchanged
 namespace/deleteable pruned
 ```
 
 We can see that by deleting the file, the resource gets deleted.
+
+In order to be able to handle pruning of custom resources, we have to customize the set of resource types that we are searching for with our label. To do this, we pass the `--prune-whitelist` flag. In order to simplify this, we've written the set of flags that we're handling to a file that we add to the command.
+
+```
+$ oc apply -Rf simple-bootstrap/ --prune -l example.com/project=simple-bootstrap $(cat prune-whitelist.txt)
+namespace/deleteable configured
+namespace/namespace-operator configured
+operatorgroup.operators.coreos.com/namespace-operator unchanged
+subscription.operators.coreos.com/namespace-configuration-operator unchanged
+clusterrolebinding.rbac.authorization.k8s.io/cluster-administrators unchanged
+userconfig.redhatcop.redhat.io/sandboxes created
+```
