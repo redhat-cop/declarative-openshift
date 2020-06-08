@@ -9,6 +9,5 @@ metadata:
     example.com/component: operators
     example.com/project: argocd-bootstrap
   name: example-argocd
-spec:
-  server:
-    route: true
+  namespace: argocd
+spec: {}
