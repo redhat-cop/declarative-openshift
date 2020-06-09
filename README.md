@@ -7,22 +7,34 @@ The purpose of these examples is twofold:
 1. To act as supporting content for a GitOps series being written for [uncontained.io](http://uncontained.io)
 2. To serve as a starting point for establishing a GitOps practice for cluster management
 
-## 1 Simple Cluster Bootstrapping
+## Quickstart - Simple Bootstrap
 
 The simple cluster bootstrapping example shows how cluster administrators might begin managing OpenShift clusters using just `oc apply`. Each resource in this example carries a common label (`example.com/project: simple-bootstrap`) that associates it with this `project`. In doing this, we can manage the full lifecycle of our resources with a single command.
 
 ```
-oc apply -Rf simple-bootstrap/ --prune -l example.com/project=simple-bootstrap
+until oc apply -Rf simple-bootstrap/ --prune -l example.com/project=simple-bootstrap; do sleep 2; done
 ```
 
-The `apply` command idempotently ensures that the live configuration is in sync with our configuration files, while the `--prune` flag allows us to also manage the deletion of live objects by simply deleting the associated file in this repository.
+Explanation of the command is below.
 
-As an example, let's bootstrap our cluster for the first time:
+### Recursive apply
 
-> :exclamation: The first time you run this command, you will get an error applying the `userconfig`. This is because there is a [race condition created when deploying operators through OLM](https://github.com/redhat-cop/declarative-openshift/issues/14). As a workaround, just run the command again until it succeeds.
+The `apply` command idempotently ensures that the live configuration is in sync with our configuration files. By adding the `-Rf simple-bootstrap/`, we are able to manage an entire directory structure of manifest files.
 
 ```
-$ oc apply -Rf simple-bootstrap/ --prune -l example.com/project=simple-bootstrap
+$ oc apply -Rf simple-bootstrap/
+namespace/deleteable created
+namespace/namespace-operator created
+operatorgroup.operators.coreos.com/namespace-operator created
+subscription.operators.coreos.com/namespace-configuration-operator created
+clusterrolebinding.rbac.authorization.k8s.io/cluster-administrators created
+userconfig.redhatcop.redhat.io/sandboxes created
+```
+
+If we run this a second time, we'll see that it still completes successfully, but notice that the action taken to each file has been changed from `create` to `unchanged` or in some cases `configured`.
+
+```
+$ oc apply -Rf simple-bootstrap/
 namespace/deleteable configured
 namespace/namespace-operator configured
 operatorgroup.operators.coreos.com/namespace-operator unchanged
@@ -30,6 +42,10 @@ subscription.operators.coreos.com/namespace-configuration-operator unchanged
 clusterrolebinding.rbac.authorization.k8s.io/cluster-administrators unchanged
 userconfig.redhatcop.redhat.io/sandboxes created
 ```
+
+### Pruning resources
+
+The `--prune` flag allows us to also manage the deletion of live objects by simply deleting the associated file in this repository.
 
 Now, let's remove a namespace and re-run the same command:
 
@@ -58,3 +74,53 @@ subscription.operators.coreos.com/namespace-configuration-operator unchanged
 clusterrolebinding.rbac.authorization.k8s.io/cluster-administrators unchanged
 userconfig.redhatcop.redhat.io/sandboxes created
 ```
+
+### Handling race conditions
+
+However, there's one likely hiccup that our workflow needs to be able to handle. The management of operators via the [Operator Lifecycel Manager](https://github.com/operator-framework/operator-lifecycle-manager) creates a race condition. When a `Subscription` and `OperatorGroup` resource gets created, it triggers OLM to fetch details about the operator, and install the relevant `CustomResourceDefinitions`(CRDs). Until the CRDs have been put to the cluster, an attempt to create a matching `CustomResource` will fail, as that resource type doesn't yet exist in the API.
+
+In our case, we are deploying the [Namespace Configuration Operator](https://github.com/redhat-cop/namespace-configuration-operator), which provides the `UserConfig` resource type. If we try to create both the `OperatorGroup`/`Subscription` to deploy the operator, and the `UserConfig` to invoke it in the same comman, we'll get an error:
+
+```
+Error from server (NotFound): error when creating "simple-bootstrap/3-operator-configs/sandbox-userconfig.yaml": the server could not find the requested resource (post userconfigs.redhatcop.redhat.io)
+```
+
+The simplest way to handle this is with a simple retry loop.
+
+```
+$ until oc apply -Rf simple-bootstrap/ --prune -l example.com/project=simple-bootstrap $(cat prune-whitelist.txt); do sleep 2; done
+namespace/deleteable configured
+namespace/namespace-operator configured
+operatorgroup.operators.coreos.com/namespace-operator unchanged
+subscription.operators.coreos.com/namespace-configuration-operator unchanged
+clusterrolebinding.rbac.authorization.k8s.io/cluster-administrators unchanged
+userconfig.redhatcop.redhat.io/sandboxes created
+```
+
+This command will re-run (not a problem since `apply` is idempotent) until all resources have been synced to the cluster. Usually this only takes two tries.
+
+## Putting it all together with a GitOps job
+
+Now that we have a repeatable process for managing cluster resources, we can set it up to run automatically as a `CronJob` inside the cluster.
+
+By running the workflow locally, we've already created a `CronJob` in the `cluster-ops` namespace. In order for it to run, it requires a secret be created pointing it to the repository where the cluster configs live.
+
+```
+oc create secret generic gitops-repo --from-literal=url=https://github.com/redhat-cop/declarative-openshift.git --from-literal=contextDir=simple-bootstrap --from-literal=pruneLabel=example.com/project=simple-bootstrap -n cluster-ops
+```
+
+Now, if you wait a few minutes and check the logs in the job pod...
+
+```
+$ oc logs cronjob-gitops-1591666560-4q7f2 -n cluster-ops
+Syncing cluster config from https://github.com/redhat-cop/declarative-openshift.git/simple-bootstrap
+Cloning into '/tmp/repodir'...
+namespace/deleteable configured
+namespace/namespace-operator configured
+operatorgroup.operators.coreos.com/namespace-operator unchanged
+subscription.operators.coreos.com/namespace-configuration-operator unchanged
+clusterrolebinding.rbac.authorization.k8s.io/cluster-administrators unchanged
+userconfig.redhatcop.redhat.io/sandboxes configured
+```
+
+Voila! Enjoy your automatically drift-controlled cluster!

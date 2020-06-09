@@ -1,0 +1,89 @@
+---
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  annotations:
+    example.com/managed-by: gitops
+    example.com/scm-url: git@github.com:redhat-cop/declarative-openshift.git
+  labels:
+    example.com/project: simple-bootstrap
+    example.com/component: namespaces
+  name: cronjob-gitops
+  namespace: cluster-ops
+spec:
+  concurrencyPolicy: Forbid
+  failedJobsHistoryLimit: 5
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          activeDeadlineSeconds: 500
+          containers:
+          - name: cronjob-gitops
+            command:
+            - /bin/bash
+            - -c
+            - |
+              if [ -z "$var" ]; then
+                echo "Syncing cluster config from $GIT_REPO/$CONTEXT_DIR"
+                git clone $GIT_REPO /tmp/repodir
+                until oc apply -Rf /tmp/repodir/$CONTEXT_DIR/ --prune -l $PRUNE_LABEL $(cat /tmp/repodir/prune-whitelist.txt); do sleep 2; done
+              else
+                echo "Job not configured"
+              fi
+            env:
+            - name: GIT_REPO
+              valueFrom:
+                secretKeyRef:
+                  name: gitops-repo
+                  key: url
+            - name: CONTEXT_DIR
+              valueFrom:
+                secretKeyRef:
+                  name: gitops-repo
+                  key: contextDir
+            - name: PRUNE_LABEL
+              valueFrom:
+                secretKeyRef:
+                  name: gitops-repo
+                  key: pruneLabel
+            image: quay.io/openshift/origin-jenkins-agent-base:4.4
+          dnsPolicy: ClusterFirst
+          restartPolicy: Never
+          serviceAccount: gitops
+          serviceAccountName: gitops
+          terminationGracePeriodSeconds: 30
+  schedule: '*/2 * * * *'
+  startingDeadlineSeconds: 60
+  successfulJobsHistoryLimit: 5
+---
+apiVersion: authorization.openshift.io/v1
+kind: ClusterRoleBinding
+metadata:
+  annotations:
+    example.com/managed-by: gitops
+    example.com/scm-url: git@github.com:redhat-cop/declarative-openshift.git
+  labels:
+    example.com/project: simple-bootstrap
+    example.com/component: namespaces
+  name: system:project-pruners
+roleRef:
+  name: cluster-admin
+subjects:
+- kind: ServiceAccount
+  name: gitops
+  namespace: cluster-ops
+userNames:
+- system:serviceaccount:cluster-ops:gitops
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    example.com/managed-by: gitops
+    example.com/scm-url: git@github.com:redhat-cop/declarative-openshift.git
+  labels:
+    example.com/project: simple-bootstrap
+    example.com/component: namespaces
+  name: gitops
+  namespace: cluster-ops
