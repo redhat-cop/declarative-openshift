@@ -79,7 +79,7 @@ userconfig.redhatcop.redhat.io/sandboxes created
 
 However, there's one likely hiccup that our workflow needs to be able to handle. The management of operators via the [Operator Lifecycel Manager](https://github.com/operator-framework/operator-lifecycle-manager) creates a race condition. When a `Subscription` and `OperatorGroup` resource gets created, it triggers OLM to fetch details about the operator, and install the relevant `CustomResourceDefinitions`(CRDs). Until the CRDs have been put to the cluster, an attempt to create a matching `CustomResource` will fail, as that resource type doesn't yet exist in the API.
 
-In our case, we are deploying the [Namespace Configuration Operator](https://github.com/redhat-cop/namespace-configuration-operator), which provides the `UserConfig` resource type. If we try to create both the `OperatorGroup`/`Subscription` to deploy the operator, and the `UserConfig` to invoke it in the same comman, we'll get an error:
+In our case, we are deploying the [Namespace Configuration Operator](https://github.com/redhat-cop/namespace-configuration-operator), which provides the `UserConfig` resource type. If we try to create both the `OperatorGroup`/`Subscription` to deploy the operator, and the `UserConfig` to invoke it in the same command, we'll get an error:
 
 ```
 Error from server (NotFound): error when creating "simple-bootstrap/3-operator-configs/sandbox-userconfig.yaml": the server could not find the requested resource (post userconfigs.redhatcop.redhat.io)

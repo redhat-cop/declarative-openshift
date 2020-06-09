@@ -7,7 +7,7 @@ metadata:
     example.com/scm-url: git@github.com:redhat-cop/declarative-openshift.git
   labels:
     example.com/project: simple-bootstrap
-    example.com/component: namespaces
+    example.com/component: configs
   name: cronjob-gitops
   namespace: cluster-ops
 spec:
@@ -65,7 +65,7 @@ metadata:
     example.com/scm-url: git@github.com:redhat-cop/declarative-openshift.git
   labels:
     example.com/project: simple-bootstrap
-    example.com/component: namespaces
+    example.com/component: configs
   name: system:project-pruners
 roleRef:
   name: cluster-admin
@@ -84,6 +84,6 @@ metadata:
     example.com/scm-url: git@github.com:redhat-cop/declarative-openshift.git
   labels:
     example.com/project: simple-bootstrap
-    example.com/component: namespaces
+    example.com/component: configs
   name: gitops
   namespace: cluster-ops

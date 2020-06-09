@@ -7,7 +7,7 @@
 --prune-whitelist core/v1/Service
 --prune-whitelist batch/v1/Job
 --prune-whitelist batch/v1beta1/CronJob
---prune-whitelist extensions/v1beta1/DaemonSet
+--prune-whitelist apps/v1/DaemonSet
 --prune-whitelist extensions/v1beta1/Deployment
 --prune-whitelist extensions/v1beta1/Ingress
 --prune-whitelist extensions/v1beta1/ReplicaSet
