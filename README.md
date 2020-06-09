@@ -12,7 +12,7 @@ The purpose of these examples is twofold:
 The simple cluster bootstrapping example shows how cluster administrators might begin managing OpenShift clusters using just `oc apply`. Each resource in this example carries a common label (`example.com/project: simple-bootstrap`) that associates it with this `project`. In doing this, we can manage the full lifecycle of our resources with a single command.
 
 ```
-until oc apply -Rf simple-bootstrap/ --prune -l example.com/project=simple-bootstrap; do sleep 2; done
+until oc apply -Rf simple-bootstrap/ --prune -l config.example.com/name=simple-bootstrap; do sleep 2; done
 ```
 
 Explanation of the command is below.
@@ -52,7 +52,7 @@ Now, let's remove a namespace and re-run the same command:
 ```
 $ rm simple-bootstrap/0-namespaces/deleteable.yaml
 
-$ oc apply -Rf simple-bootstrap/ --prune -l example.com/project=simple-bootstrap
+$ oc apply -Rf simple-bootstrap/ --prune -l config.example.com/name=simple-bootstrap
 namespace/namespace-operator configured
 operatorgroup.operators.coreos.com/namespace-operator unchanged
 subscription.operators.coreos.com/namespace-configuration-operator unchanged
@@ -66,7 +66,7 @@ We can see that by deleting the file, the resource gets deleted.
 In order to be able to handle pruning of custom resources, we have to customize the set of resource types that we are searching for with our label. To do this, we pass the `--prune-whitelist` flag. In order to simplify this, we've written the set of flags that we're handling to a file that we add to the command.
 
 ```
-$ oc apply -Rf simple-bootstrap/ --prune -l example.com/project=simple-bootstrap $(cat prune-whitelist.txt)
+$ oc apply -Rf simple-bootstrap/ --prune -l config.example.com/name=simple-bootstrap $(cat prune-whitelist.txt)
 namespace/deleteable configured
 namespace/namespace-operator configured
 operatorgroup.operators.coreos.com/namespace-operator unchanged
@@ -88,7 +88,7 @@ Error from server (NotFound): error when creating "simple-bootstrap/3-operator-c
 The simplest way to handle this is with a simple retry loop.
 
 ```
-$ until oc apply -Rf simple-bootstrap/ --prune -l example.com/project=simple-bootstrap $(cat prune-whitelist.txt); do sleep 2; done
+$ until oc apply -Rf simple-bootstrap/ --prune -l config.example.com/name=simple-bootstrap $(cat prune-whitelist.txt); do sleep 2; done
 namespace/deleteable configured
 namespace/namespace-operator configured
 operatorgroup.operators.coreos.com/namespace-operator unchanged

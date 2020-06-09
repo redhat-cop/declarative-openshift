@@ -7,7 +7,7 @@ This directory contains the manifests required to install the [Argo CD operator]
 The argo-cd cluster bootstrapping example shows how cluster administrators might begin deploying the argo-cd operator `oc apply`. Each resource in this example carries a common label (`example.com/project: argocd-bootstrap`) that associates it with this `project`. In doing this, we can manage the full lifecycle of our resources with a single command.
 
 ```
-oc apply -Rf ../argocd-bootstrap/ --prune -l example.com/project=argocd-bootstrap
+oc apply -Rf ../argocd-bootstrap/ --prune -l config.example.com/name=argocd-bootstrap
 ```
 
 The `apply` command idempotently ensures that the live configuration is in sync with our configuration files, while the `--prune` flag allows us to also manage the deletion of live objects by simply deleting the associated file in this repository.
@@ -15,7 +15,7 @@ The `apply` command idempotently ensures that the live configuration is in sync 
 As an example, let's bootstrap our cluster for the first time:
 
 ```
-$ oc apply -Rf ../argocd-bootstrap/ --prune -l example.com/project=argocd-bootstrap
+$ oc apply -Rf ../argocd-bootstrap/ --prune -l config.example.com/name=argocd-bootstrap
 namespace/argocd configured
 operatorgroup.operators.coreos.com/argocd-operator created
 subscription.operators.coreos.com/argocd-operator created
@@ -69,19 +69,19 @@ apiVersion: argoproj.io/v1alpha1
 kind: ArgoCD
 metadata:
   annotations:
-    example.com/managed-by: gitops
-    example.com/scm-url: git@github.com:redhat-cop/declarative-openshift.git
+    config.example.com/managed-by: gitops
+    config.example.com/scm-url: git@github.com:redhat-cop/declarative-openshift.git
   labels:
     example: basic
-    example.com/component: operators
-    example.com/project: argocd-bootstrap
+    config.example.com/component: operators
+    config.example.com/name: argocd-bootstrap
   name: example-argocd
 spec:
   server:
     route: true
 
 
-$ oc apply -Rf simple-bootstrap/ --prune -l example.com/project=simple-bootstrap
+$ oc apply -Rf simple-bootstrap/ --prune -l config.example.com/name=simple-bootstrap
 namespace/argocd configured
 operatorgroup.operators.coreos.com/argocd-operator unchanged
 subscription.operators.coreos.com/argocd-operator unchanged
