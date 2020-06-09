@@ -26,7 +26,7 @@ spec:
             - |
               if [ -z "$var" ]; then
                 echo "Syncing cluster config from $GIT_REPO/$CONTEXT_DIR"
-                git clone $GIT_REPO /tmp/repodir
+                git clone -b $GIT_REF $GIT_REPO /tmp/repodir
                 until oc apply -Rf /tmp/repodir/$CONTEXT_DIR/ --prune -l $PRUNE_LABEL $(cat /tmp/repodir/prune-whitelist.txt); do sleep 2; done
               else
                 echo "Job not configured"
@@ -37,6 +37,11 @@ spec:
                 secretKeyRef:
                   name: gitops-repo
                   key: url
+            - name: GIT_REF
+              valueFrom:
+                secretKeyRef:
+                  name: gitops-repo
+                  key: ref
             - name: CONTEXT_DIR
               valueFrom:
                 secretKeyRef:

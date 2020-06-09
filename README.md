@@ -106,7 +106,7 @@ Now that we have a repeatable process for managing cluster resources, we can set
 By running the workflow locally, we've already created a `CronJob` in the `cluster-ops` namespace. In order for it to run, it requires a secret be created pointing it to the repository where the cluster configs live.
 
 ```
-oc create secret generic gitops-repo --from-literal=url=https://github.com/redhat-cop/declarative-openshift.git --from-literal=contextDir=simple-bootstrap --from-literal=pruneLabel=example.com/project=simple-bootstrap -n cluster-ops
+oc create secret generic gitops-repo --from-literal=url=https://github.com/redhat-cop/declarative-openshift.git --from-literal=ref=master --from-literal=contextDir=simple-bootstrap --from-literal=pruneLabel=example.com/project=simple-bootstrap -n cluster-ops
 ```
 
 Now, if you wait a few minutes and check the logs in the job pod...
