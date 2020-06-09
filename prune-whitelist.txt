@@ -7,10 +7,11 @@
 --prune-whitelist core/v1/Service
 --prune-whitelist batch/v1/Job
 --prune-whitelist batch/v1beta1/CronJob
---prune-whitelist extensions/v1beta1/DaemonSet
---prune-whitelist extensions/v1beta1/Deployment
+--prune-whitelist apps/v1/DaemonSet
+--prune-whitelist apps/v1/Deployment
+--prune-whitelist apps/v1/ReplicaSet
+--prune-whitelist apps/v1/StatefulSet
 --prune-whitelist extensions/v1beta1/Ingress
---prune-whitelist extensions/v1beta1/ReplicaSet
---prune-whitelist apps/v1beta1/StatefulSet
---prune-whitelist apps/v1beta1/Deployment
 --prune-whitelist redhatcop.redhat.io/v1alpha1/UserConfig
+--prune-whitelist redhatcop.redhat.io/v1alpha1/GroupConfig
+--prune-whitelist redhatcop.redhat.io/v1alpha1/NamespaceConfig
