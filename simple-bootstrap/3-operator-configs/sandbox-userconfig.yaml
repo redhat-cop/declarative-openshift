@@ -3,11 +3,11 @@ apiVersion: redhatcop.redhat.io/v1alpha1
 kind: UserConfig
 metadata:
   annotations:
-    example.com/managed-by: gitops
-    example.com/scm-url: git@github.com:redhat-cop/declarative-openshift.git
+    config.example.com/managed-by: gitops
+    config.example.com/scm-url: git@github.com:redhat-cop/declarative-openshift.git
   labels:
-    example.com/project: simple-bootstrap
-    example.com/component: operator-configs
+    config.example.com/name: simple-bootstrap
+    config.example.com/component: operator-configs
   name: sandboxes
 spec:
   provider: corp-ldap

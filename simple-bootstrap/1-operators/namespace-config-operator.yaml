@@ -3,11 +3,11 @@ apiVersion: operators.coreos.com/v1
 kind: OperatorGroup
 metadata:
   annotations:
-    example.com/managed-by: gitops
-    example.com/scm-url: git@github.com:redhat-cop/declarative-openshift.git
+    config.example.com/managed-by: gitops
+    config.example.com/scm-url: git@github.com:redhat-cop/declarative-openshift.git
   labels:
-    example.com/project: simple-bootstrap
-    example.com/component: operators
+    config.example.com/name: simple-bootstrap
+    config.example.com/component: operators
   name: namespace-operator
   namespace: namespace-operator
 spec:
@@ -18,11 +18,11 @@ apiVersion: operators.coreos.com/v1alpha1
 kind: Subscription
 metadata:
   annotations:
-    example.com/managed-by: gitops
-    example.com/scm-url: git@github.com:redhat-cop/declarative-openshift.git
+    config.example.com/managed-by: gitops
+    config.example.com/scm-url: git@github.com:redhat-cop/declarative-openshift.git
   labels:
-    example.com/project: simple-bootstrap
-    example.com/component: operators
+    config.example.com/name: simple-bootstrap
+    config.example.com/component: operators
   name: namespace-configuration-operator
   namespace: namespace-operator
 spec:
