@@ -25,9 +25,11 @@ spec:
             - -c
             - |
               if [ -z "$var" ]; then
-                echo "Syncing cluster config from $GIT_REPO/$CONTEXT_DIR"
+                echo "Syncing cluster config from ${GIT_REPO}#${GIT_REF}"
                 git clone -b $GIT_REF $GIT_REPO /tmp/repodir
-                until oc apply -Rf /tmp/repodir/$CONTEXT_DIR/ --prune -l $PRUNE_LABEL $(cat /tmp/repodir/prune-whitelist.txt); do sleep 2; done
+                find /tmp/repodir/${CONTEXT_DIR}
+                echo "Applying cluster config from /tmp/repodir/${CONTEXT_DIR}"
+                until oc apply -Rf /tmp/repodir/${CONTEXT_DIR}/ --prune -l $PRUNE_LABEL $(cat /tmp/repodir/prune-whitelist.txt); do sleep 2; done
               else
                 echo "Job not configured"
               fi

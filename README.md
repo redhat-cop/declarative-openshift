@@ -9,7 +9,7 @@ The purpose of these examples is twofold:
 
 ## Quickstart - Simple Bootstrap
 
-The simple cluster bootstrapping example shows how cluster administrators might begin managing OpenShift clusters using just `oc apply`. Each resource in this example carries a common label (`example.com/project: simple-bootstrap`) that associates it with this `project`. In doing this, we can manage the full lifecycle of our resources with a single command.
+The simple cluster bootstrapping example shows how cluster administrators might begin managing OpenShift clusters using just `oc apply`. Each resource in this example carries a common label (`config.example.com/name: simple-bootstrap`) that associates it with this `project`. In doing this, we can manage the full lifecycle of our resources with a single command.
 
 ```
 until oc apply -Rf simple-bootstrap/ --prune -l config.example.com/name=simple-bootstrap; do sleep 2; done
@@ -106,7 +106,7 @@ Now that we have a repeatable process for managing cluster resources, we can set
 By running the workflow locally, we've already created a `CronJob` in the `cluster-ops` namespace. In order for it to run, it requires a secret be created pointing it to the repository where the cluster configs live.
 
 ```
-oc create secret generic gitops-repo --from-literal=url=https://github.com/redhat-cop/declarative-openshift.git --from-literal=ref=master --from-literal=contextDir=simple-bootstrap --from-literal=pruneLabel=example.com/project=simple-bootstrap -n cluster-ops
+oc create secret generic gitops-repo --from-literal=url=https://github.com/redhat-cop/declarative-openshift.git --from-literal=ref=master --from-literal=contextDir=simple-bootstrap --from-literal=pruneLabel=config.example.com/name=simple-bootstrap -n cluster-ops
 ```
 
 Now, if you wait a few minutes and check the logs in the job pod...

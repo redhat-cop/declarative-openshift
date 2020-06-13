@@ -4,7 +4,7 @@ This directory contains the manifests required to install the [Argo CD operator]
 
 ## 1 Bootstrapping the Argo CD Operator
 
-The argo-cd cluster bootstrapping example shows how cluster administrators might begin deploying the argo-cd operator `oc apply`. Each resource in this example carries a common label (`example.com/project: argocd-bootstrap`) that associates it with this `project`. In doing this, we can manage the full lifecycle of our resources with a single command.
+The argo-cd cluster bootstrapping example shows how cluster administrators might begin deploying the argo-cd operator `oc apply`. Each resource in this example carries a common label (`config.example.com/name: argocd-bootstrap`) that associates it with this `project`. In doing this, we can manage the full lifecycle of our resources with a single command.
 
 ```
 oc apply -Rf ../argocd-bootstrap/ --prune -l config.example.com/name=argocd-bootstrap
@@ -96,4 +96,4 @@ NAME                    HOST/PORT                                       PATH   S
 example-argocd-server   example-argocd-server-argocd.apps-crc.testing          example-argocd-server   https   passthrough/None   None
 ```
 
-You can now access argo-cd through the UI. The password for the admin account is the name of the server pod. In this case it would be 'example-argocd-server-6b49b4dfd8-fblp4'. 
+You can now access argo-cd through the UI. The password for the admin account is the name of the server pod. In this case it would be 'example-argocd-server-6b49b4dfd8-fblp4'.
