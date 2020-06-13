@@ -9,7 +9,7 @@ The purpose of these examples is twofold:
 
 ## Quickstart - Simple Bootstrap
 
-The simple cluster bootstrapping example shows how cluster administrators might begin managing OpenShift clusters using just `oc apply`. Each resource in this example carries a common label (`example.com/project: simple-bootstrap`) that associates it with this `project`. In doing this, we can manage the full lifecycle of our resources with a single command.
+The simple cluster bootstrapping example shows how cluster administrators might begin managing OpenShift clusters using just `oc apply`. Each resource in this example carries a common label (`config.example.com/name: simple-bootstrap`) that associates it with this `project`. In doing this, we can manage the full lifecycle of our resources with a single command.
 
 ```
 until oc apply -Rf simple-bootstrap/ --prune -l config.example.com/name=simple-bootstrap; do sleep 2; done
