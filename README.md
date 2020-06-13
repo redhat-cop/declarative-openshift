@@ -124,3 +124,10 @@ userconfig.redhatcop.redhat.io/sandboxes configured
 ```
 
 Voila! Enjoy your automatically drift-controlled cluster!
+
+## Additional Examples
+
+The following are additional examples that demonstrate how to declaratively specify common use cases for platform operation:
+
+* [ArgoCD Bootstrap](argocd-bootsrap)
+* [Security Context Constraint (SCC) Management](manage-scc)

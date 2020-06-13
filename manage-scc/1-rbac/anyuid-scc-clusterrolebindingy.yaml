@@ -1,0 +1,19 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  name: anyuid-scc
+  annotations:
+    config.example.com/managed-by: gitops
+    config.example.com/scm-url: git@github.com:redhat-cop/declarative-openshift.git
+  labels:
+    config.example.com/name: manage-scc
+    config.example.com/component: rbac
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: allow-anyuid-scc
+subjects:
+  - kind: ServiceAccount
+    name: scc-accessor
+    namespace: manage-scc
