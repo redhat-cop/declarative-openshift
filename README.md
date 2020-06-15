@@ -146,14 +146,14 @@ restricted         6h45m
 
 The most common use case for containers running in OpenShift to make use of an alternate SCC is for the container to use the ID of the user specified in the image instead of a randomly generated ID. The `anyuid` SCC provides this functionality and the assets in this exercise will demonstrate how to grant and verify access.
 
-In earlier versions of OpenShift, the preferred method for granting access to an SCC was to make use of a dedicated Service Account to execute the pod and to add the Service Account Directly to the SCC. This caused challenges as the platform evolved over time. The preferred method is to use Role Based Access Controls (RBAC) to declaratively state that grants a Service Account access to a particular SCC.
+In earlier versions of OpenShift, the preferred method for granting access to an SCC was to make use of a dedicated Service Account to execute the pod and to add the Service Account Directly to the SCC. This caused challenges as the platform evolved over time. The preferred method is to use Role Based Access Controls (RBAC) to declaratively state that a Service Account is able to access to a particular SCC.
 
 ### SCC Management in Action
 
 By applying the resources in prior sections, the following were applied to the cluster: 
 
 * A _Namespace_ called `manage-scc`
-* A _ClusterRole_ the provides access to the _anyuid_ SCC
+* A _ClusterRole_ that provides access to the _anyuid_ SCC
 * A _ServiceAccount_ that can be used by Pods requiring access to the _anyuid_ SCC
 * A _ClusterRoleBinding_ that links the _ServiceAccount_ to the _ClusterRole_
 * A _Job_ that uses the _ServiceAccount_ to validate it has access to the desired SCC
