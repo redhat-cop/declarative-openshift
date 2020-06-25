@@ -201,3 +201,15 @@ Actual SCC: anyuid
 
 Result Success!
 ```
+
+### Bootstrapping the EFK Stack
+
+The following components were deployed in the previous sections to deploy a basic EFK stack.
+
+* A _Namespace_ called `openshift-logging`
+* A _Namespace_ called `openshift-operators-redhat`
+* An _OperatorGroup_ for the cluster-logging-operator
+* A _Subscription_ that subscribes the `openshift-logging` namespace with the OLM for the cluster-logging-operator
+* An _OperatorGroup_ for the elasticsearch-operator
+* A _Subscription_ that subscribes the `openshift-opeartors-redhat` namespace with the OLM for the elasticsearch operator
+* A _ClusterLogging_ called instance that deploys an ephemeral EFK stack consisting of an elasticsearch cluster, fluentd forwarders, and a kibana deployment
