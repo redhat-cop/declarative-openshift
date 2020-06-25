@@ -239,7 +239,7 @@ status:
   phase: Active
 
 ```
-### Bootstrapping the EFK Stack
+## Bootstrapping the EFK Stack
 
 The following components were deployed in the previous sections to deploy a basic EFK stack.
 
