@@ -1,0 +1,43 @@
+apiVersion: kibana.k8s.elastic.co/v1
+kind: Kibana
+metadata:
+  name: audit-kibana
+  namespace: openshift-logging
+  annotations:
+    example.com/managed-by: gitops
+    example.com/scm-url: git@github.com:redhat-cop/declarative-openshift.git
+  labels:
+    config.example.com/component: operator-configs
+    config.example.com/project: simple-bootstrap
+spec:
+  version: 7.8.0
+  count: 1
+  elasticsearchRef:
+    name: "audit-elasticsearch"
+  podTemplate:
+    spec:
+      containers:
+      - name: kibana
+        resources:
+          limits:
+            memory: 1Gi
+            cpu: 1
+---
+apiVersion: v1
+kind: Route
+metadata:
+  name: audit-kibana
+  namespace: openshift-logging
+  annotations:
+    example.com/managed-by: gitops
+    example.com/scm-url: git@github.com:redhat-cop/declarative-openshift.git
+  labels:
+    config.example.com/component: operator-configs
+    config.example.com/project: simple-bootstrap
+spec:
+  tls:
+    termination: passthrough # Kibana is the TLS endpoint
+    insecureEdgeTerminationPolicy: Redirect
+  to:
+    kind: Service
+    name: audit-kibana-kb-http
