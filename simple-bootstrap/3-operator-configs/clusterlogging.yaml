@@ -6,6 +6,7 @@ metadata:
   annotations:
     config.example.com/managed-by: gitops
     config.example.com/scm-url: git@github.com:redhat-cop/declarative-openshift.git
+    clusterlogging.openshift.io/logforwardingtechpreview: enabled
   labels:
     config.example.com/component: operator-configs 
     config.example.com/name: simple-bootstrap

@@ -8,7 +8,7 @@ metadata:
     example.com/scm-url: git@github.com:redhat-cop/declarative-openshift.git
   labels:
     config.example.com/component: operator-configs
-    config.example.com/project: simple-bootstrap
+    config.example.com/name: simple-bootstrap
 spec:
   version: 7.8.0
   count: 1
@@ -33,7 +33,7 @@ metadata:
     example.com/scm-url: git@github.com:redhat-cop/declarative-openshift.git
   labels:
     config.example.com/component: operator-configs
-    config.example.com/project: simple-bootstrap
+    config.example.com/name: simple-bootstrap
 spec:
   tls:
     termination: passthrough # Kibana is the TLS endpoint

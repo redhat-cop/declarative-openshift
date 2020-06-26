@@ -1,0 +1,38 @@
+apiVersion: "logging.openshift.io/v1alpha1"
+kind: "LogForwarding"
+metadata:
+  name: instance
+  namespace: openshift-logging
+  annotations:
+    config.example.com/managed-by: gitops
+    config.example.com/scm-url: git@github.com:redhat-cop/declarative-openshift.git
+  labels:
+    config.example.com/component: operator-config
+    config.example.com/name: simple-bootstrap
+spec:
+  disableDefaultForwarding: true
+  outputs:
+   - name: elasticsearch
+     type: "elasticsearch"
+     endpoint: elasticsearch.openshift-logging.svc:9200
+     secret:
+        name: fluentd
+   - name: elasticsearch-audit
+     type: "elasticsearch"
+     endpoint: audit-elasticsearch-es-http.openshift-logging.svc:9200
+     secret:
+       name: audit-elasticsearch-fluentd-certs 
+  pipelines:
+   - name: container-logs
+     inputSource: logs.app
+     outputRefs:
+     - elasticsearch
+   - name: infra-logs
+     inputSource: logs.infra
+     outputRefs:
+     - elasticsearch
+   - name: audit-logs
+     inputSource: logs.audit
+     outputRefs:
+     - elasticsearch
+     - elasticsearch-audit

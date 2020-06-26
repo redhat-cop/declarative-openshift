@@ -9,7 +9,7 @@ metadata:
     config.example.com/scm-url: git@github.com:redhat-cop/declarative-openshift.git
   labels:
     config.example.com/component: operator-configs
-    config.example.com/project: simple-bootstrap
+    config.example.com/name: simple-bootstrap
 spec:
   version: 7.8.0
   nodeSets:
@@ -20,6 +20,10 @@ spec:
       node.data: true
       node.ingest: true
       node.store.allow_mmap: false
+  http:
+    tls:
+      certificate:
+        secretName: audit-elasticsearch-fluentd-certs
 ---
 apiVersion: route.openshift.io/v1
 kind: Route
@@ -31,7 +35,7 @@ metadata:
     config.example.com/scm-url: git@github.com:redhat-cop/declarative-openshift.git
   labels:
     config.example.com/component: operator-configs
-    config.example.com/project: simle-bootstrap
+    config.example.com/name: simple-bootstrap
 spec:
   tls:
     termination: passthrough # Elasticsearch is the TLS endpoint
