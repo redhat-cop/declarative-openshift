@@ -1,0 +1,33 @@
+---
+apiVersion: operators.coreos.com/v1
+kind: OperatorGroup
+metadata:
+  annotations:
+    example.com/managed-by: gitops
+    example.com/scm-url: git@github.com:redhat-cop/declarative-openshift.git
+  labels:
+    example.com/project: logging-bootstrap
+    example.com/component: operators
+  name: openshift-operators-redhat
+  namespace: openshift-operators-redhat
+spec: {}
+##TODO: Include target namespace?? the doc doesn't do it
+---
+apiVersion: operators.coreos.com/v1alpha1
+kind: Subscription
+metadata:
+  annotations:
+    example.com/managed-by: gitops
+    example.com/scm-url: git@github.com:redhat-cop/declarative-openshift.git
+  labels:
+    example.com/project: logging-bootstrap
+    example.com/component: operators
+  name: elasticsearch-operator
+  namespace: openshift-operators-redhat
+spec:
+  channel: "4.4"
+  installPlanApproval: "Automatic"
+  name: "elasticsearch-operator"
+  source: "redhat-operators"
+  sourceNamespace: openshift-marketplace
+##  startingCSV: left out in docs
