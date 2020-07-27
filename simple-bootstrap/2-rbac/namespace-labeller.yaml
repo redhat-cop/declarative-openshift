@@ -1,0 +1,51 @@
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  annotations:
+    config.example.com/managed-by: gitops
+    config.example.com/scm-url: git@github.com:redhat-cop/declarative-openshift.git
+  labels:
+    config.example.com/name: simple-bootstrap
+    config.example.com/component: rbac
+  name: namespace-labeller
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - namespaces
+    verbs:
+      - list
+      - get
+      - patch
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: namespace-labeller
+  namespace: default
+  annotations:
+    config.example.com/managed-by: gitops
+    config.example.com/scm-url: git@github.com:redhat-cop/declarative-openshift.git
+  labels:
+    config.example.com/name: simple-bootstrap
+    config.example.com/component: rbac
+---
+apiVersion: rbac.authorization.k8s.io/v1beta1
+kind: ClusterRoleBinding
+metadata:
+  name: namespace-labellers
+  annotations:
+    config.example.com/managed-by: gitops
+    config.example.com/scm-url: git@github.com:redhat-cop/declarative-openshift.git
+  labels:
+    config.example.com/name: simple-bootstrap
+    config.example.com/component: rbac
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: namespace-labeller
+subjects:
+  - kind: ServiceAccount
+    name: namespace-labeller
+    namespace: default
