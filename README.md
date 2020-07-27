@@ -201,3 +201,41 @@ Actual SCC: anyuid
 
 Result Success!
 ```
+
+## Patching Resources
+
+In some cases, a cluster administrator might have a need to apply a patch to a resource that already exists or is owned by some other process. Some use cases of this are:
+
+- Labelling the `default`, `kube-system`, or other "out of the box" namespaces
+- Labelling nodes not managed by an operator
+
+For these cases, we use the [Resource Locker Operator](https://github.com/redhat-cop/resource-locker-operator#resource-patch-locking) to provide a "declarative patch" that will be kept in place by the operator. Building this solution in a declarative way involves creating the following components:
+
+- A [manifest](/simple-bootstrap/0-namespaces/resource-locker-operator.yaml) for managing a `Namespace` for the Resource Locker Operator
+- A [manifest](/simple-bootstrap/1-operators/resource-locker-operator.yaml) for installing the Resource Locker Operator
+
+Then, for each patch we want to manage:
+
+- A [manifest](/simple-bootstrap/2-rbac/namespace-labeller.yaml) defining the `ServiceAccount`, `ClusterRole`, and `RoleBinding` (or `ClusterRoleBinding`) that will perform the patch
+- A [manifest](/simple-bootstrap/3-operator-configs/patch-default-namespace-labels.yaml) defining the `ResourceLocker` resource that defines the contents of the patch and the target resource to perform the patch on.
+
+After running this, we can see that our `default` namespace now has two labels on it.
+
+```
+$ oc get ns/default -o yaml
+apiVersion: v1
+kind: Namespace
+metadata:
+...
+  labels:
+    name: default
+    network.openshift.io/policy-group: ingress
+  name: default
+...
+spec:
+  finalizers:
+  - kubernetes
+status:
+  phase: Active
+
+```
