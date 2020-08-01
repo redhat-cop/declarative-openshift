@@ -239,3 +239,38 @@ status:
   phase: Active
 
 ```
+
+## Managing Operators
+
+Operators are a foundational component of the architecture of OpenShift, and the lifecycle of operators are managed by the [Operator Lifeycle Manager (OLM)](https://docs.openshift.com/container-platform/latest/operators/understanding_olm/olm-understanding-olm.html). As illustrated in a portion of the prior examples, an operator managed by th OLM is enabled in one or more namespaces by an [OperatorGroup](https://docs.openshift.com/container-platform/latest/operators/understanding_olm/olm-understanding-olm.html#olm-operatorgroups-about_olm-understanding-olm) and the intention to install an operator is enabled using a [Subscription](https://docs.openshift.com/container-platform/latest/operators/understanding_olm/olm-understanding-olm.html#olm-subscription_olm-understanding-olm).A subscription defines the source of the operator including the namespace, catalog and can contain the specific ClusterServiceVersion that is intended to be installed. The OLM will then create an associated [InstallPlan](https://docs.openshift.com/container-platform/4.5/operators/understanding_olm/olm-understanding-olm.html#olm-installplan_olm-understanding-olm) which includes the set of resources that wil be installed in association with the operator.
+
+To manage how upgrades are handled when a new version becomes available, operators use an [approval strategy](https://docs.openshift.com/container-platform/4.5/operators/olm-adding-operators-to-cluster.html) which can either be _Manual_ or _Automatic_ (Specified by the `installPlanApproval` of a _Subscription_). If _Automatic_ is chosen, an operator will automatically be upgraded to the latest version when a new version is available. When using the _Manual_ approval strategy, an  administrator must manually approve the operator before it is installed. 
+
+While the _automatic_ approval strategy offers the simplicity of being able to take advantage of the latest features that an operator can provide, in many cases there is a desire to explicitly specify the version to use without automatically upgrading, thus using the _manual_ approval strategy. Actions that require the intervention of an administrator to approve an operator for it to be deployed contradicts that declarative nature of GitOps. When an operator using the _manual_ approval strategy is approved, the `approved` field on the _InstallPlan_ is set to `true`. 
+
+To replicate the actions that would typically by required by an administrator to approve an operator, a _Job_ can be used. The `resource-locker-operator` deployed previously uses the _manual_ approval strategy and is approved by a _Job_ called [installplan-approver](simple-bootstrap/3-operator-configs/installplan-approver-job.yaml) which will automatically approve an _InstallPlan_ if the CSV matches the desired CSV defined in the _Subscription_.
+
+Managing the _manual_ approval strategy uses the following resources:
+
+* A set of [policies](simple-bootstrap/2-rbac/installplan-approver.yaml) including a _ServiceAccount_ for which the job will run as, a _Role_ that grants access to _InstallPlans_ and _Subscriptions_ along with a _RoleBinding_ which associates the _Role_ to the _ServiceAccount_.
+* The [installplan-approver Job](simple-bootstrap/3-operator-configs/installplan-approver-job.yaml) that approves the operator
+
+Verify the job completed successfully by executing the following command:
+
+```
+$ oc get pods -n resource-locker-operator -l=job-name=installplan-approver
+
+NAME                         READY   STATUS      RESTARTS   AGE
+installplan-approver-vh9dm   0/1     Completed   0          58m
+```
+
+When using a GitOps tool, such as ArgoCD, the following annotations can be applied to automatically delete an existing job (if found) to avoid a possible conflict when applying resources.
+
+```
+apiVersion: batch/v1
+kind: Job
+metadata:
+  annotations:
+    argocd.argoproj.io/hook: Sync
+    argocd.argoproj.io/hook-delete-policy: BeforeHookCreation
+```
