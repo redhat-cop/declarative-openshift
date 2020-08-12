@@ -20,9 +20,10 @@ rules:
       - anyuid
 ---
 apiVersion: rbac.authorization.k8s.io/v1beta1
-kind: ClusterRoleBinding
+kind: RoleBinding
 metadata:
   name: anyuid-scc
+  namespace: manage-scc
   annotations:
     config.example.com/managed-by: gitops
     config.example.com/scm-url: git@github.com:redhat-cop/declarative-openshift.git
