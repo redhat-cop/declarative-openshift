@@ -155,7 +155,7 @@ By applying the resources in prior sections, the following were applied to the c
 * A _Namespace_ called `manage-scc`
 * A _ClusterRole_ that provides access to the _anyuid_ SCC
 * A _ServiceAccount_ that can be used by Pods requiring access to the _anyuid_ SCC
-* A _ClusterRoleBinding_ that links the _ServiceAccount_ to the _ClusterRole_
+* A _RoleBinding_ in the `manage-scc` namespace that links the _ServiceAccount_ to the _ClusterRole_
 * A _Job_ that uses the _ServiceAccount_ to validate it has access to the desired SCC
 
 The key to enabling access to the _anyuid_ SCC is in the `allow-anyuid-scc` _ClusterRole_ by specifying access to `use` through this verb to the resource name called `anyuid` in the `securitycontextconstraints` resource in the `security.openshift.io` as shown below:
@@ -172,7 +172,7 @@ rules:
       - anyuid
 ```
 
-The association between the _ClusterRole_ and the ServiceAccount is in the `anyuid-scc` _ClusterRoleBinding_.
+The association between the _ClusterRole_ and the ServiceAccount is in the `anyuid-scc` _RoleBinding_.
 
 A verification job has been launched to confirm that it is running using the `anyuid` SCC. It accomplishes this task by mounting the Pod annotations to a directory using the [Downward API](https://kubernetes.io/docs/tasks/inject-data-application/downward-api-volume-expose-pod-information/#the-downward-api).
 
