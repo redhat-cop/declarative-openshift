@@ -1,0 +1,14 @@
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  annotations:
+    config.example.com/managed-by: gitops
+    config.example.com/scm-url: git@github.com:redhat-cop/declarative-openshift.git
+    openshift.io/node-selector: ""
+  labels:
+    config.example.com/name: logging-bootstrap
+    config.example.com/component: namespaces
+    openshift.io/cluster-monitoring: "true"
+  name: openshift-operators-redhat
+spec:
