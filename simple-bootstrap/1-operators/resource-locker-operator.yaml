@@ -12,7 +12,7 @@ metadata:
   namespace: resource-locker-operator
 spec:
   targetNamespaces:
-  - resource-locker-operator
+    - resource-locker-operator
 ---
 apiVersion: operators.coreos.com/v1alpha1
 kind: Subscription
@@ -27,7 +27,7 @@ metadata:
   namespace: resource-locker-operator
 spec:
   channel: alpha
-  installPlanApproval: Automatic
+  installPlanApproval: Manual
   name: resource-locker-operator
   source: community-operators
   sourceNamespace: openshift-marketplace
