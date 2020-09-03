@@ -1,0 +1,12 @@
+apiVersion: operator.open-cluster-management.io/v1
+kind: MultiClusterHub
+metadata:
+  annotations:
+    config.example.com/managed-by: gitops
+    config.example.com/scm-url: git@github.com:hornjason/declarative-openshift.git
+  labels:
+    config.example.com/name: acm-bootstrap
+    config.example.com/component: operators
+  name: multiclusterhub
+  namespace: open-cluster-management
+spec: {}
