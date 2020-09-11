@@ -78,7 +78,8 @@ metadata:
   name: example-argocd
 spec:
   server:
-    route: true
+    route: 
+      enabled: true
 
 
 $ oc apply -Rf simple-bootstrap/ --prune -l config.example.com/name=simple-bootstrap
