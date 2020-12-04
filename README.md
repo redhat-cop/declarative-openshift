@@ -207,7 +207,7 @@ Result Success!
 In some cases, a cluster administrator might have a need to apply a patch to a resource that already exists or is owned by some other process. Some use cases of this are:
 
 - Labelling the `default`, `kube-system`, or other "out of the box" namespaces
-- Labelling nodes not managed by an operator
+- [Labelling or tainting nodes not managed by an operator (UPI)](/optional-bootstrap/0-nodes/README.md)
 
 For these cases, we use the [Resource Locker Operator](https://github.com/redhat-cop/resource-locker-operator#resource-patch-locking) to provide a "declarative patch" that will be kept in place by the operator. Building this solution in a declarative way involves creating the following components:
 
