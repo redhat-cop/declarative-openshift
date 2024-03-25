@@ -1,0 +1,31 @@
+apiVersion: "logging.openshift.io/v1"
+kind: "ClusterLogging"
+metadata:
+  name: "instance" 
+  namespace: "openshift-logging"
+  annotations:
+    config.example.com/managed-by: gitops
+    config.example.com/scm-url: git@github.com:redhat-cop/declarative-openshift.git
+  labels:
+    config.example.com/component: operator-configs 
+    config.example.com/name: simple-bootstrap
+spec:
+  managementState: "Managed"  
+  logStore:
+    type: "elasticsearch"  
+    elasticsearch:
+      nodeCount: 3
+      redundancyPolicy: "SingleRedundancy" 
+      storage: {}
+  visualization:
+    type: "kibana"  
+    kibana:
+      replicas: 3 
+  curation:
+    type: "curator"  
+    curator:
+      schedule: "30 3 * * *"
+  collection:
+    logs:
+      type: "fluentd"  
+      fluentd: {}

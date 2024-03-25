@@ -240,6 +240,18 @@ status:
 
 ```
 
+## Bootstrapping the EFK Stack
+
+The following components were deployed in the previous sections to deploy a basic EFK stack.
+
+* A _Namespace_ called `openshift-logging`
+* A _Namespace_ called `openshift-operators-redhat`
+* An _OperatorGroup_ for the cluster-logging-operator
+* A _Subscription_ that subscribes the `openshift-logging` namespace with the OLM for the cluster-logging-operator
+* An _OperatorGroup_ for the elasticsearch-operator
+* A _Subscription_ that subscribes the `openshift-opeartors-redhat` namespace with the OLM for the elasticsearch operator
+* A _ClusterLogging_ called instance that deploys an ephemeral EFK stack consisting of an elasticsearch cluster, fluentd forwarders, and a kibana deployment
+
 ## Managing Operators
 
 Operators are a foundational component of the architecture of OpenShift, and the lifecycle of operators are managed by the [Operator Lifeycle Manager (OLM)](https://docs.openshift.com/container-platform/latest/operators/understanding_olm/olm-understanding-olm.html). As illustrated in a portion of the prior examples, an operator managed by the OLM is enabled in one or more namespaces by an [OperatorGroup](https://docs.openshift.com/container-platform/latest/operators/understanding_olm/olm-understanding-olm.html#olm-operatorgroups-about_olm-understanding-olm) and the intention to install an operator is enabled using a [Subscription](https://docs.openshift.com/container-platform/latest/operators/understanding_olm/olm-understanding-olm.html#olm-subscription_olm-understanding-olm). A subscription defines the source of the operator including the namespace, catalog and can contain the specific ClusterServiceVersion that is intended to be installed. The OLM will then create an associated [InstallPlan](https://docs.openshift.com/container-platform/4.5/operators/understanding_olm/olm-understanding-olm.html#olm-installplan_olm-understanding-olm) which includes the set of resources that wil be installed in association with the operator.
