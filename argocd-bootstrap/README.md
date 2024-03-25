@@ -97,4 +97,8 @@ NAME                    HOST/PORT                                       PATH   S
 example-argocd-server   example-argocd-server-argocd.apps-crc.testing          example-argocd-server   https   passthrough/None   None
 ```
 
-You can now access argo-cd through the UI. The password for the admin account is the name of the server pod. In this case it would be 'example-argocd-server-6b49b4dfd8-fblp4'.
+You can now access argo-cd through the UI. The password for the admin account is auto-generated and stored in the secret 'example-argocd-cluster'. To extract the admin password with 'jq':
+
+```
+$ oc get secret/example-argocd-cluster -o json | jq '.data|to_entries|map({key, value:.value|@base64d})|from_entries'
+```
