@@ -1,0 +1,53 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  annotations:
+    config.example.com/managed-by: gitops
+    config.example.com/scm-url: git@github.com:redhat-cop/declarative-openshift.git
+  labels:
+    config.example.com/name: simple-bootstrap
+    config.example.com/component: configs
+  name: installplan-approver
+  namespace: resource-locker-operator
+spec:
+  template:
+    spec:
+      containers:
+        - image: registry.redhat.io/openshift4/ose-cli:v4.4
+          command:
+            - /bin/bash
+            - -c
+            - |
+              export HOME=/tmp/approver
+
+              echo "Approving operator InstallPlans.  Waiting a few seconds to make sure the InstallPlan gets created first."
+              sleep 10
+              for subscription in `oc get subscription.operators.coreos.com -o name`
+              do 
+                desiredcsv=$(oc get $subscription -o jsonpath='{ .spec.startingCSV }')
+
+                until [ "$(oc get installplan.operators.coreos.com --template="{{ range \$item := .items }}{{ range \$item.spec.clusterServiceVersionNames }}{{ if eq . \"$desiredcsv\"}}{{ printf \"%s\n\" \$item.metadata.name }}{{end}}{{end}}{{end}}")" != "" ]; do sleep 2; done
+
+                installplans=$(oc get installplan.operators.coreos.com --template="{{ range \$item := .items }}{{ range \$item.spec.clusterServiceVersionNames }}{{ if eq . \"$desiredcsv\"}}{{ printf \"%s\n\" \$item.metadata.name }}{{end}}{{end}}{{end}}")
+
+                for installplan in $installplans
+                do
+                  if [ "`oc get installplan.operators.coreos.com $installplan -o jsonpath="{.spec.approved}"`" == "false" ]; then
+
+                    echo "Approving Subscription $subscription with install plan $installplan"
+
+                    oc patch installplan.operators.coreos.com $installplan --type=json -p='[{"op":"replace","path": "/spec/approved", "value": true}]'
+
+                  else
+                    echo "Install Plan '$installplan' already approved"
+                  fi
+                done
+              done
+
+          imagePullPolicy: Always
+          name: installplan-approver
+      dnsPolicy: ClusterFirst
+      restartPolicy: OnFailure
+      serviceAccount: installplan-approver-job
+      serviceAccountName: installplan-approver-job
+      terminationGracePeriodSeconds: 30
