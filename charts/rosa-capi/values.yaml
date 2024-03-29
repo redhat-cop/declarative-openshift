@@ -1,0 +1,65 @@
+# Default values for rosa-capi.
+
+# nameOverride: my-test-cluster
+fullnameOverride: my-test-cluster
+
+# Generate a token from https://console.redhat.com/openshift/token/rosa and paste it here
+# - alternatively supply it on the CLI with '--set ocmToken'
+#ocmToken: eyJhbGciOiJIUZzabDrsd......
+
+# For the most cases, the OCM API URL doesn't need to be changed - but it's here in case you need to change it from the default
+#ocmApiUrl
+
+rosaControlPlane:
+  awsRoles:
+    # Replace <account> with your targeted AWS account #
+    # Replace the "ManagedOpenShift-HCO-ROSA..." part with what you used in your enviornment
+    installerRoleARN: "arn:aws:iam::<account>:role/ManagedOpenShift-HCP-ROSA-Installer-Role"
+    supportRoleARN: "arn:aws:iam::<account>:role/ManagedOpenShift-HCP-ROSA-Support-Role"
+    workerRoleARN: "arn:aws:iam::<account>:role/ManagedOpenShift-HCP-ROSA-Worker-Role"
+    rolesRef:
+      ingressARN: "arn:aws:iam::<account>:role/rhpds-capi-1-openshift-ingress-operator-cloud-credentials"
+      imageRegistryARN: "arn:aws:iam::<account>:role/rhpds-capi-1-openshift-image-registry-installer-cloud-credential"
+      storageARN: "arn:aws:iam::<account>:role/rhpds-capi-1-openshift-cluster-csi-drivers-ebs-cloud-credentials"
+      networkARN: "arn:aws:iam::<account>:role/rhpds-capi-1-openshift-cloud-network-config-controller-cloud-cre"
+      kubeCloudControllerARN: "arn:aws:iam::<account>:role/rhpds-capi-1-kube-system-kube-controller-manager"
+      nodePoolManagementARN: "arn:aws:iam::<account>:role/rhpds-capi-1-kube-system-capa-controller-manager"
+      controlPlaneOperatorARN: "arn:aws:iam::<account>:role/rhpds-capi-1-kube-system-control-plane-operator"
+      kmsProviderARN: "arn:aws:iam::<account>:role/rhpds-capi-1-kube-system-kms-provider"
+
+    availabilityZones:
+    - "us-east-1a"
+    - "us-east-1b"
+    - "us-east-1c"
+
+  billingAccount: <insert-billing-account-number>        
+
+  # Set this to "private" or "public"
+  # - remember to adjust subnets below accordingly
+  endpointAccess: "public"
+
+  # Supply the OIDC ID for your environment
+  oidcID: 3a4bgjoe7d7shfngim18b740e7p81aof
+
+  network:
+    # Set networkType to "Other" to install no CNI by default
+    #networkType: Other  
+
+    #prefix: 23
+
+    #machineCIDR: “10.0.0.0/16”.
+    podCIDR: "10.128.0.0/14"
+    #serviceCIDR: "172.30.0.0/16"
+
+  # For Public Clusters, the subnets come in pairs - one private and one public
+  # For Private Clusters, only supply private subnets
+  subnets:
+    - subnet-<replaceme-private-1a>
+    - subnet-<replaceme-public-1a>
+    - subnet-<replaceme-private-1b>
+    - subnet-<replaceme-public-1b>
+    - subnet-<replaceme-private-1c>
+    - subnet-<replaceme-public-1c>
+
+  region: "us-east-1"
+  version: "4.15.0"

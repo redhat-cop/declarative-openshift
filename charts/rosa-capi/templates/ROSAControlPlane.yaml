@@ -1,0 +1,25 @@
+---
+apiVersion: controlplane.cluster.x-k8s.io/v1beta2
+kind: ROSAControlPlane
+metadata:
+  name: {{ include "rosa-capi.fullname" . }}-control-plane
+  labels:
+    {{- include "rosa-capi.labels" . | nindent 4 }}
+spec:
+  availabilityZones: {{- toYaml .Values.rosaControlPlane.availabilityZones | nindent 4 }}
+  additionalTags:
+    "rosa-capi-demo/cluster-name": {{ include "rosa-capi.fullname" . }}
+  billingAccount: "{{ .Values.rosaControlPlane.billingAccount }}"
+  credentialsSecretRef:
+    name: {{ include "rosa-capi.fullname" . }}-secret
+  endpointAccess: {{ .Values.rosaControlPlane.endpointAccess }}
+  installerRoleARN: {{ .Values.rosaControlPlane.awsRoles.installerRoleARN }}
+  network: {{- toYaml .Values.rosaControlPlane.network | nindent 4 }}
+  oidcID: "{{ .Values.rosaControlPlane.oidcID }}"
+  region: "{{ .Values.rosaControlPlane.region }}"
+  rolesRef: {{- toYaml .Values.rosaControlPlane.awsRoles.rolesRef | nindent 4 }}
+  rosaClusterName: {{ include "rosa-capi.fullname" . }}
+  subnets: {{- toYaml .Values.rosaControlPlane.subnets | nindent 4 }}
+  supportRoleARN: {{ .Values.rosaControlPlane.awsRoles.supportRoleARN }}
+  workerRoleARN: {{ .Values.rosaControlPlane.awsRoles.workerRoleARN }}
+  version: "{{ .Values.rosaControlPlane.version }}"
