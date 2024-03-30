@@ -1,0 +1,5 @@
+# Default values for openshift-management.
+
+# Disable RBAC if you don't need to manage aspects like rolebindings, etc.
+rbac:
+  enabled: true

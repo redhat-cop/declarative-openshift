@@ -1,0 +1,16 @@
+{{- if .Values.rbac.enabled }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: capa-privileged
+  namespace: capa-system
+subjects:
+  - kind: ServiceAccount
+    name: capa-controller-manager
+    namespace: capa-system
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: system:openshift:scc:privileged
+{{- end }}

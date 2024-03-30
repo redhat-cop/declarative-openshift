@@ -42,7 +42,7 @@ rosaControlPlane:
   oidcID: 3a4bgjoe7d7shfngim18b740e7p81aof
 
   network:
-    # Set networkType to "Other" to install no CNI by default
+    # Set networkType to "Other" to install no CNI
     #networkType: Other  
 
     #prefix: 23
