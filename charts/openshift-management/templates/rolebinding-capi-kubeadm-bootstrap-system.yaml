@@ -3,14 +3,14 @@
 apiVersion: rbac.authorization.k8s.io/v1
 kind: RoleBinding
 metadata:
-  name: capi-kubeadm-bootstrap-manager-privileged
-  namespace: capi-kubeadm-bootstrap-system
+  name: capi-kubeadm-bootstrap-manager-openshift-scc
+  namespace: {{ default "capi-kubeadm-bootstrap-system" (.Values.capiKubeadmBootstrap).namespace }}
 subjects:
   - kind: ServiceAccount
     name: capi-kubeadm-bootstrap-manager
-    namespace: capi-kubeadm-bootstrap-system
+    namespace: {{ default "capi-kubeadm-bootstrap-system" (.Values.capiKubeadmBootstrap).namespace }}
 roleRef:
   apiGroup: rbac.authorization.k8s.io
   kind: ClusterRole
-  name: system:openshift:scc:privileged
+  name: system:openshift:scc:nonroot-v2
 {{- end }}

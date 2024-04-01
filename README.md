@@ -56,7 +56,7 @@ Apply customizations provided by this repo:
 **_Optional_**: This step is needed if your mangement cluster is an OpenShift Cluster
 
 ```
-  helm template charts/openshift-management --name-template=rosa-hcp | oc apply -f -
+  helm template --release-name rosa-hcp charts/openshift-management | oc apply -f -
 ```
 
 Make sure the CAPI pods are operational before running the next apply. <br />
@@ -91,9 +91,9 @@ Run the following command to validate that everything is set up correctly, and r
 With the above steps from the Management Cluster done, it is now time to deploy the first (workload) cluster. For this first simple quickstart, that is done in two steps:
 
   1. Tweak the values in [charts/rosa-capi/values.yaml](charts/rosa-capi/values.yaml)
-  2. run `helm template charts/rosa-capi --name-template=rosa-hcp --set ocmToken=jSDFsdfsdfSDF | oc apply -f -`
+  2. run `helm template --release-name rosa-hcp --set ocmToken=jSDFsdfsdfSDF charts/rosa-capi | oc apply -f -`
 
-**_NOTE:_** Replace the `rosa-hcp` template name and OCM Token above with your own values - alternatively set your OCM Token in the values file. The OCM Token can be fetched from https://console.redhat.com/openshift/token/rosa.
+**_NOTE:_** Replace the `rosa-hcp` release name and OCM Token above with your own values - alternatively set your OCM Token in the values file. The OCM Token can be fetched from https://console.redhat.com/openshift/token/rosa.
 
 #### Validation steps
 Check the status of the the `ROSAControlPlane` deployment:
