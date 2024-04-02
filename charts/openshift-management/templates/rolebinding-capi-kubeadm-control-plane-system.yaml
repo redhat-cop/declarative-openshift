@@ -1,0 +1,17 @@
+{{- if .Values.rbac.enabled }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: capi-kubeadm-control-plane-manager-openshift-scc
+  namespace: {{ default "capi-kubeadm-control-plane-system" (.Values.capiKubeadmControlPlane).namespace }}
+subjects:
+  - kind: ServiceAccount
+    name: capi-kubeadm-control-plane-manager
+    namespace: {{ default "capi-kubeadm-control-plane-system" (.Values.capiKubeadmControlPlane).namespace }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: system:openshift:scc:nonroot-v2
+{{- end }}
+

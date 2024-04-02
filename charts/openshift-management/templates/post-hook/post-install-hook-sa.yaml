@@ -1,0 +1,8 @@
+{{- if .Values.rbac.enabled }}
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: openshift-capi-management-hook
+  namespace: capi-system
+{{- end }}

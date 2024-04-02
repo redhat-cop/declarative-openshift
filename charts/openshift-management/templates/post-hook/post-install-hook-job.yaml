@@ -1,0 +1,36 @@
+{{- if .Values.rbac.enabled }}
+---
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: {{ include "openshift-management.fullname" . }}-hook
+  namespace: capi-system  
+  labels:
+    {{- include "openshift-management.labels" . | nindent 4 }}
+  annotations:
+    "helm.sh/hook": post-install
+    "helm.sh/hook-weight": "-1"
+    "helm.sh/hook-delete-policy": hook-succeeded
+spec:
+  template:
+    metadata:
+      name: "{{ .Release.Name }}"
+      labels:
+        app.kubernetes.io/managed-by: {{ .Release.Service | quote }}
+        app.kubernetes.io/instance: {{ .Release.Name | quote }}
+        helm.sh/chart: "{{ .Chart.Name }}-{{ .Chart.Version }}"
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: post-install-job
+          image: registry.redhat.io/openshift4/ose-cli
+          command:
+            - /bin/bash
+            - -c
+            - |
+              oc rollout restart deployment capi-controller-manager -n capi-system
+              oc rollout restart deployment capa-controller-manager -n capa-system
+              oc rollout restart deployment capi-kubeadm-bootstrap-controller-manager -n capi-kubeadm-bootstrap-system
+              oc rollout restart deployment capi-kubeadm-control-plane-controller-manager -n capi-kubeadm-control-plane-system
+      serviceAccountName: openshift-capi-management-hook
+{{- end }}

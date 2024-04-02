@@ -1,0 +1,18 @@
+# Default values for openshift-management.
+
+#capa:
+#  namespace: "capa-system"
+
+#capi:
+#  namespace: "capi-system"
+
+#capiKubeadmBootstrap:
+#  namespace: "capi-kubeadm-bootstrap-system"
+
+#capiKubeadmControlPlane:
+#  namespace: "capi-kubeadm-control-plane-system"
+
+
+# Disable RBAC if you don't need to manage aspects like rolebindings, etc.
+rbac:
+  enabled: true
