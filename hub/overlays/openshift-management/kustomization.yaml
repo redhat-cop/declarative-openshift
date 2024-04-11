@@ -4,7 +4,7 @@ kind: Kustomization
 
 
 helmGlobals:
-  chartHome: ../../charts
+  chartHome: ../../../charts
 
 helmCharts:
   - name: openshift-management

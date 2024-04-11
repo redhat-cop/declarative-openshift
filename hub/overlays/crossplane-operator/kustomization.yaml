@@ -7,7 +7,7 @@ resources:
 - ./rbac.yaml
 
 helmGlobals:
-  chartHome: ../../charts
+  chartHome: ../../../charts
 
 helmCharts:
   - name: crossplane
