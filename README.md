@@ -26,7 +26,21 @@ Before applying any of the manifests to create a new cluster(s), the following p
  - A valid account for [Red Hat Hybrid Cloud Console](https://console.redhat.com/openshift/overview)
  - [Steps 1-3 here](https://docs.aws.amazon.com/rosa/latest/userguide/getting-started-hcp.html#getting-started-hcp-step-1) to create the necessary VPC configuration and account and operator roles. 
 
-**_NOTE_**: _Steps 1-3 from above will soon be replaced with declarative content within this repo. More to come on this soon..._
+**_NOTE_**: _Steps 1-3 from above,like network and operator roles prerequistes can be provision by crossplane with aws IAM/EC2 providers. we are still working on the account roles provison as ROSA provision require a madatory suffix like "-ROSA-Worker-Role" for account roles which crossplane now only support lowercase alphabet in the managed resource name like "-rosa-worker-role". please follow below setps to setup up a gitops enviroments and provison crossplane controll and providers. 
+
+ ```
+export gitops_repo=https://github.com/x.git #<your newly created repo>
+export cluster_name=hub #<your hub cluster name, typically "hub">
+export cluster_base_domain=$(oc get ingress.config.openshift.io cluster --template={{.spec.domain}} | sed -e "s/^apps.//")
+export platform_base_domain=${cluster_base_domain#*.}
+oc apply -f .bootstrap/subscription.yaml
+oc apply -f .bootstrap/cluster-rolebinding.yaml
+envsubst < .bootstrap/argocd.yaml | oc apply -f -
+envsubst < .bootstrap/root-application.yaml | oc apply -f -
+ ```
+
+will soon be replaced with declarative content within this repo. More to come on this soon..._
+
 
 ### Management Cluster 
 In order to deploy a new OpenShift Cluster using CAPI, you will need a management cluster with the necessary CAPI and CAPA deployments in an operational state. 
