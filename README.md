@@ -39,6 +39,14 @@ envsubst < .bootstrap/argocd.yaml | oc apply -f -
 envsubst < .bootstrap/rosa-hcp-application.yaml | oc apply -f -
  ```
 
+bootstrap rosa-hcp-application will create below resources
+![rosa-hcp-application](./pics/argocd.png)
+ Please ignore the manuall steps for capi-management,openshift-management which mentioned in the rest, if you try to use gitops for these two charts.
+
+we seperate prerequsites into three section(account roles,cluster roles,network elements)
+![prerequsites](./pics/prerequsites.png)
+please ignore the rosa and account-role folds for now.
+
 will soon be replaced with declarative content within this repo. More to come on this soon..._
 
 
