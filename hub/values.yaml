@@ -71,7 +71,7 @@ applications:
     destination:
       namespace: crossplane-system
     source:
-      path: clusters/hub/overlays/crossplane-provider-config
+      path: hub/overlays/crossplane-provider-config
 
   crossplane-compositions:
     finalizers: 
