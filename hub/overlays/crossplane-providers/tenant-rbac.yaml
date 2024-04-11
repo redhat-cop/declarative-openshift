@@ -1,0 +1,12 @@
+# this rule aggregated composite permissions and then add them to the std edit role, allowing tenant to edit them
+kind: ClusterRole
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: crossplane-ns-edit
+  labels:
+    rbac.authorization.k8s.io/aggregate-to-edit: 'true'
+rules: []
+aggregationRule:
+  clusterRoleSelectors:
+    - matchLabels:
+        rbac.crossplane.io/aggregate-to-ns-edit: 'true'

@@ -1,0 +1,86 @@
+projects:
+
+  cluster-config:
+    annotations:
+      notifications.argoproj.io/subscribe.on-sync-failed.slack: cluster-gitops
+      notifications.argoproj.io/subscribe.on-health-degraded.slack: cluster-gitops
+    description: Project for overall cluster configuration
+    namespace: openshift-gitops
+    sourceRepos:
+    - ${INFRA_GITOPS_REPO}
+    destinations: |
+      - namespace: '*'
+        server: https://kubernetes.default.svc
+    extraFields: |
+      clusterResourceWhitelist:
+      - group: '*'
+        kind: '*'
+
+applications:
+
+  openshift-management:
+    annotations:
+      argocd.argoproj.io/compare-options: IgnoreExtraneous
+      argocd.argoproj.io/sync-wave: '6'
+#    destination:
+#      namespace: '*'
+    source:
+      path: hub/overlays/openshift-management
+
+  capi-management:
+    annotations:
+      argocd.argoproj.io/compare-options: IgnoreExtraneous
+      argocd.argoproj.io/sync-wave: '7'
+    #destination:
+    #  namespace: '*'
+    source:
+      path: hub/overlays/capi-management
+
+
+  crossplane-operator:
+    annotations:
+      argocd.argoproj.io/compare-options: IgnoreExtraneous
+      argocd.argoproj.io/sync-wave: '8'
+    destination:
+      namespace: crossplane-system
+    source:
+      path: hub/overlays/crossplane-operator
+    extraFields: |
+      ignoreDifferences:
+        - group: 'apps'
+          jsonPointers:
+            - /spec/template/spec/containers/0/env/0/valueFrom/resourceFieldRef/divisor
+            - /spec/template/spec/containers/0/env/1/valueFrom/resourceFieldRef/divisor
+            - /spec/template/spec/initContainers/0/env/0/valueFrom/resourceFieldRef/divisor
+            - /spec/template/spec/initContainers/0/env/1/valueFrom/resourceFieldRef/divisor            
+          kind: Deployment            
+
+  crossplane-providers:
+    annotations:
+      argocd.argoproj.io/compare-options: IgnoreExtraneous
+      argocd.argoproj.io/sync-wave: '9'
+    destination:
+      namespace: crossplane-system
+    source:
+      path: hub/overlays/crossplane-providers
+
+  crossplane-provider-config:
+    annotations:
+      argocd.argoproj.io/compare-options: IgnoreExtraneous
+      argocd.argoproj.io/sync-wave: '10'
+    destination:
+      namespace: crossplane-system
+    source:
+      path: clusters/hub/overlays/crossplane-provider-config
+
+  crossplane-compositions:
+    finalizers: 
+    - resources-finalizer.argocd.argoproj.io
+    annotations:
+      argocd.argoproj.io/compare-options: IgnoreExtraneous
+      argocd.argoproj.io/sync-wave: '11'
+    destination:
+      namespace: crossplane-system
+    source:
+      path: hub/overlays/crossplane-compositions 
+                          
