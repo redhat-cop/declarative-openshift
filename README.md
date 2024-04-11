@@ -43,10 +43,24 @@ bootstrap rosa-hcp-application will create below resources
 ![rosa-hcp-application](./pics/argocd.png)
  Please ignore the manuall steps for capi-management,openshift-management which mentioned in the rest, if you try to use gitops for these two charts.
 
+ Prepare AWS key for crossplane
+
+ ```bash
+cat <<EOF >aws.txt
+[default]
+aws_access_key_id = <aws_key_id>
+aws_secret_access_key = <aws_accesss_key>
+EOF
+
+oc create secret generic \
+aws-secret \
+-n crossplane-system \
+--from-file=creds=./awskey.tx
+ ```
+
 we seperate prerequsites into three section(account roles,cluster roles,network elements)
 ![prerequsites](./pics/prerequsites.png)
 please ignore the rosa and account-role folds for now.
-
 will soon be replaced with declarative content within this repo. More to come on this soon..._
 
 
