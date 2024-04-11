@@ -6,8 +6,8 @@ resources:
 - ./namespace.yaml
 - ./rbac.yaml
 
-#helmGlobals:
-#  chartHome: ../../charts
+helmGlobals:
+  chartHome: ../../charts
 
 helmCharts:
   - name: crossplane
