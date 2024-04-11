@@ -26,7 +26,7 @@ Before applying any of the manifests to create a new cluster(s), the following p
  - A valid account for [Red Hat Hybrid Cloud Console](https://console.redhat.com/openshift/overview)
  - [Steps 1-3 here](https://docs.aws.amazon.com/rosa/latest/userguide/getting-started-hcp.html#getting-started-hcp-step-1) to create the necessary VPC configuration and account and operator roles. 
 
-**_NOTE_**: _Steps 1-3 from above,like network and operator roles prerequistes can be provision by [crossplane](https://docs.crossplane.io/) with [aws IAM/EC2 providers](https://marketplace.upbound.io/providers/upbound/provider-family-aws/v1.3.1/providers). we are still working on the account roles provison as ROSA provision require a madatory suffix like "-ROSA-Worker-Role" for account roles which crossplane now only support lowercase alphabet in the managed resource name like "-rosa-worker-role". please follow below setps to setup up a gitops enviroments and provison crossplane controll and providers. 
+**_NOTE_**: _Steps 1-3 from above,like network and operator roles prerequisites can be provision by [crossplane](https://docs.crossplane.io/) with [aws IAM/EC2 providers](https://marketplace.upbound.io/providers/upbound/provider-family-aws/v1.3.1/providers). we are still working on the account roles provision as ROSA provision require a mandatory suffix like "-ROSA-Worker-Role" for account roles which crossplane now only support lowercase alphabet in the managed resource name like "-rosa-worker-role". please follow below setps to setup up a gitops enviroments and provision crossplane controller and providers. 
 
  ```bash
 export gitops_repo=https://github.com/AplphaGO/declarative-openshift.git #<your newly created repo>
