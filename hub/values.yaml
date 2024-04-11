@@ -7,7 +7,7 @@ projects:
     description: Project for overall cluster configuration
     namespace: openshift-gitops
     sourceRepos:
-    - ${gitops_repo}
+    - https://github.com/AplphaGO/declarative-openshift.git
     destinations: |
       - namespace: '*'
         server: https://kubernetes.default.svc
