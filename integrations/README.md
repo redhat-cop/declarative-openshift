@@ -49,5 +49,6 @@ aws-secret \
 
 we seperate prerequsites into three section(account roles,cluster roles,network elements)
 ![prerequsites](../pics/prerequisites.png)
+
 please ignore the rosa and account-role folds for now.
 will soon be replaced with declarative content within this repo. More to come on this soon..._
