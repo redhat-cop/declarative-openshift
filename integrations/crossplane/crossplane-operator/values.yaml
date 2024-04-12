@@ -1,0 +1,7 @@
+#registryCaBundleConfig:
+#     name: ca-bundle-config
+#     key: ca-bundle
+
+args:
+  - "-d"
+  - --enable-external-secret-stores  

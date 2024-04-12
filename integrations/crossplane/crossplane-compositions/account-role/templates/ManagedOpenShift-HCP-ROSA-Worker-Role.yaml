@@ -1,0 +1,39 @@
+#{{- $rosaOpenshiftVersion := .Values.rosa_openshift_version }}
+#{{- $redhatAwsId := .Values.redhat_aws_id }}
+---
+apiVersion: iam.aws.upbound.io/v1beta1
+kind: Role
+metadata:
+  annotations:
+    argocd.argoproj.io/sync-wave: "5"
+  #name: ManagedOpenShift-HCP-ROSA-Worker-Role
+  name: managedopenshift-hcp-rosa-worker-role
+spec:
+  forProvider:
+    managedPolicyArns:
+       - arn:aws:iam::aws:policy/service-role/ROSAWorkerInstancePolicy
+    tags:
+      red-hat-managed: "true"
+      rosa_hcp_policies: "true"
+      rosa_role_type: instance_worker 
+      rosa_managed_policies: "true" 
+      rosa_openshift_version: "{{ .Values.rosa_openshift_version }}" 
+      #rosa_role_prefix: ManagedOpenShift
+      rosa_role_prefix: managedopenshift
+    assumeRolePolicy: |
+      {
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Action": [
+              "sts:AssumeRole"
+            ],
+            "Effect": "Allow",
+            "Principal": {
+              "Service": [
+                "ec2.amazonaws.com"
+              ]
+            }
+          }
+        ]
+      }
