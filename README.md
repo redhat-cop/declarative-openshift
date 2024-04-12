@@ -54,7 +54,7 @@ Run the following commands to prepare the environment and management cluster:
 
 Apply customizations provided by this repo:
 
-we provide two way to apply customizations,i.e GitOps and manually.
+we provide two ways to apply customizations,i.e GitOps and manually.
 
 1. Appy customization throught GitOps
 ```bash
@@ -69,6 +69,7 @@ envsubst < .bootstrap/rosa-hcp-application.yaml | oc apply -f -
  ```
 
 bootstrap rosa-hcp-application will create below resources
+**_Optional_**: openshift-management step is needed if your mangement cluster is an OpenShift Cluster
 ![customized managementCluster](./pics/managementCluster.png)
 
 
