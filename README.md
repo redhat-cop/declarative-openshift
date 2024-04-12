@@ -26,42 +26,7 @@ Before applying any of the manifests to create a new cluster(s), the following p
  - A valid account for [Red Hat Hybrid Cloud Console](https://console.redhat.com/openshift/overview)
  - [Steps 1-3 here](https://docs.aws.amazon.com/rosa/latest/userguide/getting-started-hcp.html#getting-started-hcp-step-1) to create the necessary VPC configuration and account and operator roles. 
 
-**_NOTE_**: _Steps 1-3 from above,like network and operator roles prerequisites can be provision by [crossplane](https://docs.crossplane.io/) with [aws IAM/EC2 providers](https://marketplace.upbound.io/providers/upbound/provider-family-aws/v1.3.1/providers). we are still working on the account roles provision as ROSA provision require a mandatory suffix like "-ROSA-Worker-Role" for account roles which crossplane now only support lowercase alphabet in the managed resource name like "-rosa-worker-role". please follow below setps to setup up a gitops enviroments and provision crossplane controller and providers. 
-
- ```bash
-export gitops_repo=https://github.com/AplphaGO/declarative-openshift.git #<your newly created repo>
-export cluster_name=hub #<your hub cluster name, typically "hub">
-export cluster_base_domain=$(oc get ingress.config.openshift.io cluster --template={{.spec.domain}} | sed -e "s/^apps.//")
-export platform_base_domain=${cluster_base_domain#*.}
-oc apply -f .bootstrap/subscription.yaml
-oc apply -f .bootstrap/cluster-rolebinding.yaml
-envsubst < .bootstrap/argocd.yaml | oc apply -f -
-envsubst < .bootstrap/rosa-hcp-application.yaml | oc apply -f -
- ```
-
-bootstrap rosa-hcp-application will create below resources
-![rosa-hcp-application](./pics/argocd.png)
- Please ignore the manuall steps for capi-management,openshift-management which mentioned in the rest, if you try to use gitops for these two charts.
-
- Prepare AWS key for crossplane
-
- ```bash
-cat <<EOF >aws.txt
-[default]
-aws_access_key_id = <aws_key_id>
-aws_secret_access_key = <aws_accesss_key>
-EOF
-
-oc create secret generic \
-aws-secret \
--n crossplane-system \
---from-file=creds=./awskey.tx
- ```
-
-we seperate prerequsites into three section(account roles,cluster roles,network elements)
-![prerequsites](./pics/prerequsites.png)
-please ignore the rosa and account-role folds for now.
-will soon be replaced with declarative content within this repo. More to come on this soon..._
+**_NOTE_**: _Steps 1-3 from above prerequisites,like network,account roles and operator roles  can be provision by integrated tools like [ACK](https://aws.amazon.com/blogs/containers/aws-controllers-for-kubernetes-ack/), [Terraform](https://www.terraform.io/), [Ansible](https://www.ansible.com/) and  [crossplane](https://docs.crossplane.io/) etc. please refer to [here](./integrations/README.md) for more details. 
 
 
 ### Management Cluster 
@@ -88,6 +53,25 @@ Run the following commands to prepare the environment and management cluster:
 ```
 
 Apply customizations provided by this repo:
+
+we provide two way to apply customizations,i.e GitOps and manually.
+
+1. Appy customization throught GitOps
+```bash
+export gitops_repo=https://github.com/<your_orgOrName>/declarative-openshift.git #<your newly created repo>
+export cluster_name=managementCluster #<your hub cluster name, typically "hub">
+export cluster_base_domain=$(oc get ingress.config.openshift.io cluster --template={{.spec.domain}} | sed -e "s/^apps.//")
+export platform_base_domain=${cluster_base_domain#*.}
+oc apply -f .bootstrap/subscription.yaml
+oc apply -f .bootstrap/cluster-rolebinding.yaml
+envsubst < .bootstrap/argocd.yaml | oc apply -f -
+envsubst < .bootstrap/rosa-hcp-application.yaml | oc apply -f -
+ ```
+
+bootstrap rosa-hcp-application will create below resources
+
+
+2. Apply customization manually
 
 **_Optional_**: This step is needed if your mangement cluster is an OpenShift Cluster
 

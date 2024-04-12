@@ -13,5 +13,5 @@ spec:
   config:
     env:
     - name: ARGOCD_CLUSTER_CONFIG_NAMESPACES
-      value: openshift-gitops, tenant-gitops
+      value: openshift-gitops
 

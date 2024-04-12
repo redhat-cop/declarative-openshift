@@ -374,7 +374,7 @@ spec:
           # all created clusters base domain should be <cluster-name>.<PLATFORM_BASE_DOMAIN> 
           - name: PLATFORM_BASE_DOMAIN
             value: '${platform_base_domain}'
-          - name: HUB_BASE_DOMAIN
+          - name: CLUSTER_BASE_DOMAIN
             value: '${cluster_base_domain}'
           - name: INFRA_GITOPS_REPO
             value: '${gitops_repo}'                                    

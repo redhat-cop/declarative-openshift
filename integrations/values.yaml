@@ -1,10 +1,10 @@
 projects:
 
-  cluster-config:
+  integration-config:
     annotations:
-      notifications.argoproj.io/subscribe.on-sync-failed.slack: cluster-gitops
-      notifications.argoproj.io/subscribe.on-health-degraded.slack: cluster-gitops
-    description: Project for overall cluster configuration
+      notifications.argoproj.io/subscribe.on-sync-failed.slack: integration-gitops
+      notifications.argoproj.io/subscribe.on-health-degraded.slack: integration-gitops
+    description: Project for overall integration configuration
     namespace: openshift-gitops
     sourceRepos:
     - ${INFRA_GITOPS_REPO}
@@ -17,25 +17,6 @@ projects:
         kind: '*'
 
 applications:
-
-  openshift-management:
-    annotations:
-      argocd.argoproj.io/compare-options: IgnoreExtraneous
-      argocd.argoproj.io/sync-wave: '6'
-#    destination:
-#      namespace: '*'
-    source:
-      path: hub/overlays/openshift-management
-
-  capi-management:
-    annotations:
-      argocd.argoproj.io/compare-options: IgnoreExtraneous
-      argocd.argoproj.io/sync-wave: '7'
-    #destination:
-    #  namespace: '*'
-    source:
-      path: hub/overlays/capi-management
-
 
   crossplane-operator:
     annotations:
