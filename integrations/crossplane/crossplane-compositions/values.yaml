@@ -6,7 +6,7 @@ thumbprintList: 9e99a48a9960b14926bb7f3b02e22da2b0ab7280
 #https://oidc.op1.openshiftapps.com/2ag434nind6c19tid004jo232ehle0qb
 #https://oidc.op1.openshiftapps.com/{{ .Values.oidc_path }}
 oidc_path: 2ahdhncdtpn83rdog5qt4ffonogahp0d
-aws_account_id: "486432305052"  
+aws_account_id: "044482294870"  
 
 vpc_cidrBlock: "10.0.0.0/16"
 region: us-east-1
