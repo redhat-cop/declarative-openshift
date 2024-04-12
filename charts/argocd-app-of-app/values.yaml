@@ -11,7 +11,7 @@ default:
       server: https://kubernetes.default.svc
     source:
       repoURL: ${INFRA_GITOPS_REPO}
-      targetRevision: integrations
+      targetRevision: HEAD
     syncOptions:
     - ApplyOutOfSyncOnly=true
     - PrunePropagationPolicy=foreground
