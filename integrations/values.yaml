@@ -25,7 +25,7 @@ applications:
     destination:
       namespace: crossplane-system
     source:
-      path: integration/crossplane/crossplane-operator
+      path: integrations/crossplane/crossplane-operator
     extraFields: |
       ignoreDifferences:
         - group: 'apps'
@@ -43,7 +43,7 @@ applications:
     destination:
       namespace: crossplane-system
     source:
-      path: integration/crossplane/crossplane-providers
+      path: integrations/crossplane/crossplane-providers
 
   crossplane-provider-config:
     annotations:
@@ -52,7 +52,7 @@ applications:
     destination:
       namespace: crossplane-system
     source:
-      path: integration/crossplane/crossplane-provider-config
+      path: integrations/crossplane/crossplane-provider-config
 
   crossplane-compositions:
     finalizers: 
@@ -63,5 +63,5 @@ applications:
     destination:
       namespace: crossplane-system
     source:
-      path: integration/crossplane/crossplane-compositions 
+      path: integrations/crossplane/crossplane-compositions 
                           
