@@ -7,9 +7,9 @@ a place for integrtation tool to provision prerequisites(account roles,oicd,oper
 Crossplane is an open source Kubernetes extension that transforms your Kubernetes cluster into a universal control plane.
 please refer to [crossplane](https://docs.crossplane.io/) for more details.
 
-we use GitOps methodology to implement crossplane operator provision through Helm Charts and extend it with [AWS IAM/EC2 providers](https://marketplace.upbound.io/providers/upbound/provider-family-aws/v1.3.1/providers) to deal with AWS managed resources
+We use GitOps methodology to implement crossplane operator provision through Helm Charts and extend it with [AWS IAM/EC2 providers](https://marketplace.upbound.io/providers/upbound/provider-family-aws/v1.3.1/providers) to deal with AWS managed resources
 
-we are still working on the account roles provision as ROSA provision require a mandatory suffix like "-ROSA-Worker-Role" for account roles which crossplane now only support lowercase alphabet in the managed resource name like "-rosa-worker-role". please follow below setps to setup up a gitops enviroments and provision crossplane controller and providers. 
+We are still working on the account roles provision as ROSA provision require a mandatory suffix like "-ROSA-Worker-Role" for account roles which crossplane now only support lowercase alphabet in the managed resource name like "-rosa-worker-role". please follow below setps to setup up a gitops enviroments and provision crossplane controller and providers. 
 
 you can direct jump to the next step if you already have done preparation for  GitOps enviroment by following [these steps](./README.md).
 
@@ -30,8 +30,7 @@ envsubst < .bootstrap/integration-application.yaml | oc apply -f -
 ```
 
 bootstrap rosa-hcp-application will create below resources
-![rosa-hcp-application](./pics/argocd.png)
- Please ignore the manuall steps for capi-management,openshift-management which mentioned in the rest, if you try to use gitops for these two charts.
+![integrations-crossplane](../pics/integrations-crossplane.png)
 
  Prepare AWS key for crossplane
 
@@ -49,6 +48,6 @@ aws-secret \
  ```
 
 we seperate prerequsites into three section(account roles,cluster roles,network elements)
-![prerequsites](./pics/prerequsites.png)
+![prerequsites](../pics/prerequisites.png)
 please ignore the rosa and account-role folds for now.
 will soon be replaced with declarative content within this repo. More to come on this soon..._
