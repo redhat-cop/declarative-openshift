@@ -2,7 +2,7 @@ a place for integrtation tool to provision prerequisites(account roles,oicd,oper
 # ACK
 # Ansible
 # Terraform
-# crossplane
+# Crossplane
 
 Crossplane is an open source Kubernetes extension that transforms your Kubernetes cluster into a universal control plane.
 please refer to [crossplane](https://docs.crossplane.io/) for more details.
