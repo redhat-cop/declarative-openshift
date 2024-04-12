@@ -69,9 +69,10 @@ envsubst < .bootstrap/rosa-hcp-application.yaml | oc apply -f -
  ```
 
 bootstrap rosa-hcp-application will create below resources
+![customized managementCluster](./pics/managementCluster.png)
 
 
-2. Apply customization manually
+2. or Apply customization manually
 
 **_Optional_**: This step is needed if your mangement cluster is an OpenShift Cluster
 
