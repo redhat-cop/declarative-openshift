@@ -1,0 +1,48 @@
+roles:
+  controller-manager:
+     role_name: kube-system-capa-controller-manager
+     managedPolicyArns: arn:aws:iam::aws:policy/service-role/ROSANodePoolManagementPolicy
+     operator_name: capa-controller-manager
+     operator_namespace: kube-system  
+  
+  control-plane-operator:
+     role_name: kube-system-control-plane-operator
+     managedPolicyArns: arn:aws:iam::aws:policy/service-role/ROSAControlPlaneOperatorPolicy
+     operator_name: control-plane-operator
+     operator_namespace: kube-system
+  
+  kms-provider:
+     role_name: kube-system-kms-provider
+     managedPolicyArns: arn:aws:iam::aws:policy/service-role/ROSAKMSProviderPolicy
+     operator_name: kms-provider
+     operator_namespace: kube-system
+
+  ebs-cloud-credentials:
+     role_name: openshift-cluster-csi-drivers-ebs-cloud-credentials
+     managedPolicyArns: arn:aws:iam::aws:policy/service-role/ROSAAmazonEBSCSIDriverOperatorPolicy
+     operator_name: ebs-cloud-credentials
+     operator_namespace: openshift-cluster-csi-drivers
+
+  cloud-network-config-controller:
+     role_name: openshift-cloud-network-config-controller-cloud-crede
+     managedPolicyArns: arn:aws:iam::aws:policy/service-role/ROSACloudNetworkConfigOperatorPolicy
+     operator_name: cloud-credentials
+     operator_namespace: openshift-cloud-network-config-controller
+
+  installer-cloud-credentials:
+     role_name: openshift-image-registry-installer-cloud-credentials
+     managedPolicyArns: arn:aws:iam::aws:policy/service-role/ROSAImageRegistryOperatorPolicy
+     operator_name: installer-cloud-credentials
+     operator_namespace: openshift-image-registry
+
+  openshift-ingress-operator:
+     role_name: openshift-ingress-operator-cloud-credentials
+     managedPolicyArns: arn:aws:iam::aws:policy/service-role/ROSAIngressOperatorPolicy
+     operator_name: cloud-credentials
+     operator_namespace: openshift-ingress-operator
+  
+  kube-controller-manager:
+     role_name: kube-system-kube-controller-manager
+     managedPolicyArns: arn:aws:iam::aws:policy/service-role/ROSAKubeControllerPolicy
+     operator_name: kube-controller-manager
+     operator_namespace: kube-system

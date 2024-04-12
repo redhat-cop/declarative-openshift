@@ -1,0 +1,16 @@
+apiVersion: iam.aws.upbound.io/v1beta1
+kind: OpenIDConnectProvider
+metadata:
+  annotations:
+    argocd.argoproj.io/sync-wave: "3"
+  name: example
+spec:
+  forProvider:
+    tags:
+      red-hat-managed: "true"
+    clientIdList:
+      - openshift
+      - sts.amazonaws.com
+    thumbprintList:
+      - {{ .Values.thumbprintList }}
+    url: https://oidc.op1.openshiftapps.com/{{ .Values.oidc_path }}

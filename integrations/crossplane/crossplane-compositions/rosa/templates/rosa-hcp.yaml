@@ -1,0 +1,52 @@
+apiVersion: cluster.x-k8s.io/v1beta1
+kind: Cluster
+metadata:
+  name: {{ .Values.cluster_name }}
+spec:
+  clusterNetwork:
+    pods:
+      cidrBlocks:
+      - 192.168.0.0/16
+  controlPlaneRef:
+    apiVersion: controlplane.cluster.x-k8s.io/v1beta2
+    kind: ROSAControlPlane
+    name: {{ .Values.cluster_name }}-control-plane
+  infrastructureRef:
+    apiVersion: infrastructure.cluster.x-k8s.io/v1beta2
+    kind: ROSACluster
+    name: {{ .Values.cluster_name }}
+---
+apiVersion: infrastructure.cluster.x-k8s.io/v1beta2
+kind: ROSACluster
+metadata:
+  name: {{ .Values.cluster_name }}
+spec: {}
+---
+apiVersion: controlplane.cluster.x-k8s.io/v1beta2
+kind: ROSAControlPlane
+metadata:
+  name: {{ .Values.cluster_name }}-control-plane
+spec:
+  availabilityZones:
+  - {{ .Values.availabilityZone }}
+  installerRoleARN: arn:aws:iam::{{ .Values.aws_account_id  }}:role/managedopenshift-hcp-rosa-installer-role
+  network:
+    machineCIDR: {{ .Values.vpc_cidrBlock }}
+  oidcID: {{ .Values.oidc_path }}
+  region: {{ .Values.region }}
+  rolesRef:
+    controlPlaneOperatorARN: arn:aws:iam::{{ .Values.aws_account_id  }}:role/{{ .Values.cluster_name }}-kube-system-control-plane-operator
+    imageRegistryARN: arn:aws:iam::{{ .Values.aws_account_id  }}:role/{{ .Values.cluster_name }}-openshift-image-registry-installer-cloud-credentials
+    ingressARN: arn:aws:iam::{{ .Values.aws_account_id  }}:role/{{ .Values.cluster_name }}-openshift-ingress-operator-cloud-credentials
+    kmsProviderARN: arn:aws:iam::{{ .Values.aws_account_id  }}:role/{{ .Values.cluster_name }}-kube-system-kms-provider
+    kubeCloudControllerARN: arn:aws:iam::{{ .Values.aws_account_id  }}:role/{{ .Values.cluster_name }}-kube-system-kube-controller-manager
+    networkARN: arn:aws:iam::{{ .Values.aws_account_id  }}:role/{{ .Values.cluster_name }}-openshift-cloud-network-config-controller-cloud-crede
+    nodePoolManagementARN: arn:aws:iam::{{ .Values.aws_account_id  }}:role/{{ .Values.cluster_name }}-kube-system-capa-controller-manager
+    storageARN: arn:aws:iam::{{ .Values.aws_account_id  }}:role/{{ .Values.cluster_name }}-openshift-cluster-csi-drivers-ebs-cloud-credentials
+  rosaClusterName: {{ .Values.cluster_name }}
+  subnets:
+     - << subnet-public-id >>
+     - << subnet-private-id >>
+  supportRoleARN: arn:aws:iam::{{ .Values.aws_account_id  }}:role/managedopenshift-hcp-rosa-support-role
+  version: "{{ .Values.rosa_openshift_version }}"
+  workerRoleARN: arn:aws:iam::{{ .Values.aws_account_id  }}:role/managedopenshift-hcp-rosa-worker-role
