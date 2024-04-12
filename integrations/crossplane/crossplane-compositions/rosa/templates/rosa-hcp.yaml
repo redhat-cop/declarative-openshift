@@ -29,7 +29,8 @@ metadata:
 spec:
   availabilityZones:
   - {{ .Values.availabilityZone }}
-  installerRoleARN: arn:aws:iam::{{ .Values.aws_account_id  }}:role/managedopenshift-hcp-rosa-installer-role
+  billingAccount: "{{ .Values.aws_account_id }}"
+  installerRoleARN: arn:aws:iam::{{ .Values.aws_account_id  }}:role/ManagedOpenShift-HCP-ROSA-Installer-Role
   network:
     machineCIDR: {{ .Values.vpc_cidrBlock }}
   oidcID: {{ .Values.oidc_path }}
@@ -45,8 +46,8 @@ spec:
     storageARN: arn:aws:iam::{{ .Values.aws_account_id  }}:role/{{ .Values.cluster_name }}-openshift-cluster-csi-drivers-ebs-cloud-credentials
   rosaClusterName: {{ .Values.cluster_name }}
   subnets:
-     - << subnet-public-id >>
-     - << subnet-private-id >>
-  supportRoleARN: arn:aws:iam::{{ .Values.aws_account_id  }}:role/managedopenshift-hcp-rosa-support-role
+     - subnet-07834be6d28de3638
+     - subnet-0ec5c5d86330e0929
+  supportRoleARN: arn:aws:iam::{{ .Values.aws_account_id  }}:role/ManagedOpenShift-HCP-ROSA-Support-Role
   version: "{{ .Values.rosa_openshift_version }}"
-  workerRoleARN: arn:aws:iam::{{ .Values.aws_account_id  }}:role/managedopenshift-hcp-rosa-worker-role
+  workerRoleARN: arn:aws:iam::{{ .Values.aws_account_id  }}:role/ManagedOpenShift-HCP-ROSA-Worker-Role
