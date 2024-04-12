@@ -4,6 +4,6 @@ kind: Kustomization
 namespace: crossplane-system
 resources: 
 - ./aws-provider.yaml
-- ./kubernetes-provider.yaml
+#- ./kubernetes-provider.yaml
 - ./tenant-rbac.yaml
    
