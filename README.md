@@ -59,7 +59,7 @@ we provide two ways to apply customizations,i.e GitOps and manually.
 1. Appy customization throught GitOps
 ```bash
 export gitops_repo=https://github.com/<your_orgOrName>/declarative-openshift.git #<your newly created repo>
-export cluster_name=managementCluster #<your hub cluster name, typically "hub">
+export cluster_name=managementCluster #<your management cluster name >
 export cluster_base_domain=$(oc get ingress.config.openshift.io cluster --template={{.spec.domain}} | sed -e "s/^apps.//")
 export platform_base_domain=${cluster_base_domain#*.}
 oc apply -f .bootstrap/subscription.yaml
