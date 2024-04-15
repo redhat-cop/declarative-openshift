@@ -32,7 +32,11 @@ spec:
             "Condition": {
               "StringEquals": {
                 "oidc.op1.openshiftapps.com/{{ $oidcPath }}:sub": [
-                  "system:serviceaccount:kube-system:{{ $val.operator_name }}"
+                  {{- $saLen := len $val.service_account }}
+                  {{- range $idx,$sa := $val.service_account }}
+                  "system:serviceaccount:{{ $val.operator_namespace }}:{{ . }}"
+                  {{- if ne (add $idx 1) $saLen }},{{- end }}
+                  {{- end }}
                 ]
               }
             },
