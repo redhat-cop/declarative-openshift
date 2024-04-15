@@ -54,14 +54,14 @@ applications:
     source:
       path: integrations/crossplane/crossplane-provider-config
 
-  #crossplane-compositions:
-  #  finalizers: 
-  #  - resources-finalizer.argocd.argoproj.io
-  #  annotations:
-  #    argocd.argoproj.io/compare-options: IgnoreExtraneous
-  #    argocd.argoproj.io/sync-wave: '11'
-  #  destination:
-  #    namespace: crossplane-system
-  #  source:
-  #    path: integrations/crossplane/crossplane-compositions 
+  crossplane-compositions:
+    finalizers: 
+    - resources-finalizer.argocd.argoproj.io
+    annotations:
+      argocd.argoproj.io/compare-options: IgnoreExtraneous
+      argocd.argoproj.io/sync-wave: '11'
+    destination:
+      namespace: crossplane-system
+    source:
+      path: integrations/crossplane/crossplane-compositions 
                           
