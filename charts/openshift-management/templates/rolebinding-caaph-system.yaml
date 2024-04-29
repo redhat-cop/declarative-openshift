@@ -1,0 +1,16 @@
+{{- if .Values.rbac.enabled }}
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: caaph-openshift-scc
+  namespace: {{ default "caaph-system" (.Values.capa).namespace }}
+subjects:
+  - kind: ServiceAccount
+    name: caaph-controller-manager
+    namespace: {{ default "caaph-system" (.Values.capa).namespace }}
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: system:openshift:scc:hostaccess
+{{- end }}

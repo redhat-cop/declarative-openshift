@@ -57,7 +57,7 @@ Run the following commands to prepare the environment and management cluster:
   export AWS_B64ENCODED_CREDENTIALS=$(clusterawsadm bootstrap credentials encode-as-profile)
   export EXP_ROSA="true"
   export EXP_MACHINE_POOL="true"
-  clusterctl init --infrastructure aws
+  clusterctl init --infrastructure aws --addon helm
 ```
 
 #### Customize Openshift (Optional)
