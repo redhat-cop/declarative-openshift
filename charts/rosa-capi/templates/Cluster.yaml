@@ -5,6 +5,7 @@ metadata:
   name: {{ include "rosa-capi.fullname" . }}
   labels:
     {{- include "rosa-capi.labels" . | nindent 4 }}
+    argoCDChart: enabled
 spec:
   clusterNetwork:
     pods:
