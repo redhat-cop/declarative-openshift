@@ -1,0 +1,6 @@
+application:
+  name: rosa-hcp-applications
+  namespace: openshift-gitops
+  repoURL: <<YOUR_REPO_URL>>
+  targetRevision: main  
+  path: managementCluster 
