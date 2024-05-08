@@ -1,6 +1,6 @@
 projects:
 
-  managementCluster:
+  managementcluster:
     annotations:
       notifications.argoproj.io/subscribe.on-sync-failed.slack: cluster-gitops
       notifications.argoproj.io/subscribe.on-health-degraded.slack: cluster-gitops
