@@ -1,3 +1,0 @@
-.bootstrap/integration-application.yaml merge=ours
-.bootstrap/rosa-hcp-application.yaml merge=ours
-charts/argocd-app-of-app/values.yaml merge=ours
