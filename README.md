@@ -56,7 +56,7 @@ Apply customizations provided by this repo:
 
 we provide two ways to apply customizations,i.e GitOps and manually.
 
-1. Appy customization throught GitOps
+1. Bootstrap AgoCD instance on management Cluster 
 ```bash
 export gitops_repo=https://github.com/<your_orgOrName>/declarative-openshift.git #<your newly created repo>
 export cluster_name=managementCluster #<your management cluster name >
@@ -65,8 +65,15 @@ export platform_base_domain=${cluster_base_domain#*.}
 oc apply -f .bootstrap/subscription.yaml
 oc apply -f .bootstrap/cluster-rolebinding.yaml
 envsubst < .bootstrap/argocd.yaml | oc apply -f -
-envsubst < .bootstrap/rosa-hcp-application.yaml | oc apply -f -
  ```
+
+2. Bootstrap management Cluster confiurations
+
+replace values in .bootstrap/rosa-hcp-application/values.yaml
+
+```bash
+helm template .bootstrap/rosa-hcp-application   -f .bootstrap/rosa-hcp-application/values.yaml | oc apply -f -
+```
 
 bootstrap rosa-hcp-application will create below resources
 **_Optional_**: openshift-management step is needed if your mangement cluster is an OpenShift Cluster

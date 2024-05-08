@@ -1,9 +1,9 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: integration-applications
+  name: {{ .Values.application.name }}
   # You'll usually want to add your resources to the argocd namespace.
-  namespace: openshift-gitops
+  namespace: {{ .Values.application.namespace }}
   # Add this finalizer ONLY if you want these to cascade delete.
   finalizers:
     # The default behaviour is foreground cascading deletion
@@ -20,9 +20,9 @@ spec:
 
   # Source of the application manifests
   source:
-    repoURL: ${gitops_repo}  # Can point to either a Helm chart repo or a git repo.
-    targetRevision: HEAD  # For Helm, this refers to the chart version.
-    path: integrations  # This has no meaning for Helm charts pulled directly from a Helm repo instead of git.
+    repoURL: {{ .Values.application.repoURL }}  # Can point to either a Helm chart repo or a git repo.
+    targetRevision: {{ .Values.application.targetRevision }}  # For Helm, this refers to the chart version.
+    path: {{ .Values.application.path }}  # This has no meaning for Helm charts pulled directly from a Helm repo instead of git.
 
   # Destination cluster and namespace to deploy the application
   destination:
@@ -31,7 +31,7 @@ spec:
     # or cluster name
     # name: in-cluster
     # The namespace will only be set for namespace-scoped resources that have not set a value for .metadata.namespace
-    namespace: openshift-gitops
+    namespace:  {{ .Values.application.namespace }}
 
   # Sync policy
   syncPolicy:
