@@ -1,3 +1,6 @@
+default:
+  project: integration-config
+
 projects:
 
   integration-config:
