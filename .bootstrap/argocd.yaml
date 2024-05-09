@@ -361,6 +361,20 @@ spec:
       g, admin, role:admin
     scopes: "[groups]"
   repo:
+    env:
+      - name: KUSTOMIZE_PLUGIN_HOME
+        value: /etc/kustomize/plugin
+      - name: CLUSTER_NAME
+        value: '${cluster_name}'
+      - name: CLUSTER_BASE_DOMAIN
+        value: '${cluster_base_domain}'
+      # all created clusters base domain should be <cluster-name>.<PLATFORM_BASE_DOMAIN> 
+      - name: PLATFORM_BASE_DOMAIN
+        value: '${platform_base_domain}'
+      - name: CLUSTER_BASE_DOMAIN
+        value: '${cluster_base_domain}'
+      - name: INFRA_GITOPS_REPO
+        value: '${gitops_repo}'    
     sidecarContainers:
       - name: setenv-plugin
         command: [/var/run/argocd/argocd-cmp-server]
