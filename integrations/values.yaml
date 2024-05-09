@@ -5,7 +5,7 @@ projects:
       notifications.argoproj.io/subscribe.on-sync-failed.slack: integration-gitops
       notifications.argoproj.io/subscribe.on-health-degraded.slack: integration-gitops
     description: Project for overall integration configuration
-    namespace: openshift-gitops
+    namespace: gitops
     sourceRepos:
     - ${INFRA_GITOPS_REPO}
     destinations: |

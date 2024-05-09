@@ -7,7 +7,7 @@ default:
     autoSyncPrune: false
     project: cluster-config
     destination:
-      namespace: openshift-gitops
+      namespace: gitops
       server: https://kubernetes.default.svc
     source:
       repoURL: ${INFRA_GITOPS_REPO}

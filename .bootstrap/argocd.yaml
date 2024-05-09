@@ -3,7 +3,7 @@ apiVersion: argoproj.io/v1beta1
 kind: ArgoCD
 metadata:
   name: openshift-gitops
-  namespace: openshift-gitops
+  namespace: gitops
 spec:
   resourceTrackingMethod: annotation
   kustomizeBuildOptions: --enable-alpha-plugins --load-restrictor LoadRestrictionsNone --helm-command /usr/local/bin/helm
@@ -467,7 +467,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: setenv-cmp-plugin
-  namespace: openshift-gitops
+  namespace: gitops
 data:
   plugin.yaml: |
     apiVersion: argoproj.io/v1alpha1
