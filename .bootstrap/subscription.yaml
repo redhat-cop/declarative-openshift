@@ -31,5 +31,5 @@ spec:
     - name: DISABLE_DEFAULT_ARGOCD_INSTANCE
       value: 'true' 
     - name: ARGOCD_CLUSTER_CONFIG_NAMESPACES
-      value: 'openshift-gitops'
+      value: 'gitops'
 

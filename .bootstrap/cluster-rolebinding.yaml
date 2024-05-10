@@ -1,4 +1,13 @@
 ---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: gitops
+  annotations:
+    openshift.io/display-name: "OpenShift GitOps"
+  labels:
+    openshift.io/cluster-monitoring: 'true'
+---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
@@ -10,4 +19,4 @@ roleRef:
 subjects:
   - kind: ServiceAccount
     name: openshift-gitops-argocd-application-controller
-    namespace: openshift-gitops
+    namespace: gitops
