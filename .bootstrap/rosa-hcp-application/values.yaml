@@ -1,6 +1,6 @@
 application:
   name: rosa-hcp-applications
   namespace: gitops
-  repoURL: https://github.com/AplphaGO/declarative-openshift.git
-  targetRevision: integrations-v1  
+  repoURL: <YOUR_REPO_URL>
+  targetRevision: <BRANCH_NAME>  
   path: managementCluster 

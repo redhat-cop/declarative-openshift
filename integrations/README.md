@@ -24,15 +24,25 @@ oc apply -f .bootstrap/cluster-rolebinding.yaml
 envsubst < .bootstrap/argocd.yaml | oc apply -f -
  ```
 2. Create integration application in argoCD
+Replace your values in [.bootstrap/integration-application/values.yaml](../.bootstrap/integration-application/values.yaml)
 
+```yaml
+application:
+    name: integration-applications # leave it as default
+    namespace: gitops              # namespace which you provision the argoCD instance with envsubst < .bootstrap/argocd.yaml | oc apply -f -
+    repoURL: <YOUR_REPO_URL>       # For example, https://github.com/AplphaGO/declarative-openshift.git
+    targetRevision: <BRANCH_NAME>  # To Specify which branch you want use, For example,dev,test,prod,HEAD,etc.  
+    path: integrations # leave it as default
+```
+Bootstrap the application
 ```bash
-envsubst < .bootstrap/integration-application.yaml | oc apply -f -
+helm template .bootstrap/integration-application/   -f .bootstrap/integration-application/values.yaml | oc apply -f -
 ```
 
-bootstrap rosa-hcp-application will create below resources
+the  bootstrap integration-application will create below resources
 ![integrations-crossplane](../pics/integrations-crossplane.png)
 
- Prepare AWS key for crossplane
+3. Prepare AWS key for crossplane
 
  ```bash
 cat <<EOF >aws.txt
@@ -44,7 +54,7 @@ EOF
 oc create secret generic \
 aws-secret \
 -n crossplane-system \
---from-file=creds=./awskey.tx
+--from-file=creds=./awskey.txt
  ```
 
 we seperate prerequsites into three section(account roles,cluster roles,network elements)
