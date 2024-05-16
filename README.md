@@ -54,44 +54,34 @@ Run the following commands to prepare the environment and management cluster:
 
 Apply customizations provided by this repo:
 
-we provide two ways to apply customizations,i.e GitOps and manually.
+we provide GitOps ways to apply customizations
 
 1. Bootstrap AgoCD instance on management Cluster 
+**_Note_**: These steps will disable the default argocd instance with setting DISABLE_DEFAULT_ARGOCD_INSTANCE as 'true' and will provision a argocd instance in namespace named as  "gitops". 
 ```bash
-export gitops_repo=https://github.com/<your_orgOrName>/declarative-openshift.git #<your newly created repo>
-oc apply -f .bootstrap/subscription.yaml
-oc apply -f .bootstrap/cluster-rolebinding.yaml
-envsubst < .bootstrap/argocd.yaml | oc apply -f -
+oc apply -f bootstrap/subscription.yaml
+oc apply -f bootstrap/cluster-rolebinding.yaml
+oc apply -f bootstrap/argocd.yaml
  ```
 
 2. Bootstrap management Cluster configurations
 
-Replace your values in [.bootstrap/rosa-hcp-application/values.yaml](.bootstrap/rosa-hcp-application/values.yaml)
-```yaml
-application:
-  name: rosa-hcp-applications  # leave it as default
-  namespace: gitops  # namespace which you provision the argoCD instance with envsubst < .bootstrap/argocd.yaml | oc apply -f -
-  repoURL: <YOUR_REPO_URL>  # For example, https://github.com/AplphaGO/declarative-openshift.git
-  targetRevision: <BRANCH_NAME> #To Specify which branch you want use, For example,dev,test,prod,HEAD,etc.
-  path: managementCluster # leave it as default
-```
+Prerequisites:
+  - Download argocd cli according you OS type from [here](https://github.com/argoproj/argo-cd/releases) 
+  - Install argocd cli on you laptop or server where you will issue the command to create the applicationSet, for Linux server, move the argocd cli to /usr/local/bin/argocd
+  - Login argocd server with username and password
 
-**_Optional_**: if you use main branch as default
-Replace your targetRevision values in charts/argocd-app-of-app/values.yaml if you are not use the main branch as default.
-```yaml
-   ...
-    source:
-      repoURL: ${INFRA_GITOPS_REPO} 
-      targetRevision: main #To Specify which branch you want use,if the default is not main
-   ...
-```
-
-Bootstrap the application
+Here are example commands to create applicationSet for MacOS 
 ```bash
-helm template .bootstrap/rosa-hcp-application   -f .bootstrap/rosa-hcp-application/values.yaml | oc apply -f -
-```
+curl -L  -o /usr/local/bin/argocd  https://github.com/argoproj/argo-cd/releases/download/v2.11.0/argocd-linux-amd64
+chmod  +x /usr/local/bin/argocd
 
-the bootstrap rosa-hcp-application will create below resources
+argocd login openshift-gitops-gitops.$(oc get ingress.config.openshift.io cluster --template={{.spec.domain}}) #input user
+
+argocd appset create bootstrap/managementClusterConfigApplicationSet.yaml
+ ```
+
+the applicationSet will create below resources
 
 ![customized managementCluster](./pics/managementCluster.png)
 
