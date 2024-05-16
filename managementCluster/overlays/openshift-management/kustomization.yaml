@@ -8,5 +8,5 @@ helmGlobals:
 
 helmCharts:
   - name: openshift-management
-    releaseName: rosa-hcp
+    releaseName: openshift-management
     valuesFile: values.yaml

@@ -1,6 +1,0 @@
-application:
-  name: rosa-hcp-applications
-  namespace: gitops
-  repoURL: <YOUR_REPO_URL>
-  targetRevision: <BRANCH_NAME>  
-  path: managementCluster 

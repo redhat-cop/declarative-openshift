@@ -7,5 +7,5 @@ helmGlobals:
 
 helmCharts:
   - name: capi-management
-    releaseName: rosa-hcp
+    releaseName: capi-management
     valuesFile: values.yaml

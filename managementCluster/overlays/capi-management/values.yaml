@@ -1,1 +1,5 @@
-#default values
+# Default values for capi-management.
+
+application:
+      name: capi-management
+      destination: https://kubernetes.default.svc
