@@ -1,17 +1,15 @@
 apiVersion: argoproj.io/v1alpha1
 kind: ApplicationSet
 metadata:
- name: managementClusterConfig
- namespace: gitops
+ name: management-cluster-config
+ namespace: openshift-gitops
 spec:
  generators:
-   - matrix:
-       generators:
-         - git:
-             repoURL: https://github.com/AplphaGO/declarative-openshift.git
-             revision: main
-             files:
-               - path: "managementCluster/**/values.yaml"
+ - git:
+     repoURL: https://github.com/AplphaGO/declarative-openshift.git
+     revision: main
+     files:
+       - path: "managementCluster/**/values.yaml"
  template:
    metadata:
      name: "config-{{application.name}}"
@@ -22,10 +20,10 @@ spec:
      source:
        repoURL: https://github.com/AplphaGO/declarative-openshift.git
        targetRevision: main
-       path: managementClusters/overlays/{{application.name}}
-       helm:
-         valueFiles:
-           - managementClusters/overlays/{{application.name}}/values.yaml
+       path: managementCluster/overlays/{{application.name}}
+       #helm:
+       #  valueFiles:
+       #    - managementCluster/overlays/{{application.name}}/values.yaml
      destination:
        server: "{{application.destination}}"
      # Sync policy
