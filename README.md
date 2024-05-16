@@ -56,7 +56,8 @@ Apply customizations provided by this repo:
 
 we provide GitOps ways to apply customizations
 
-1. Bootstrap AgoCD instance on management Cluster 
+1. Bootstrap AgoCD instance on management Cluster
+
 **_Note_**: These steps will disable the default argocd instance with setting DISABLE_DEFAULT_ARGOCD_INSTANCE as 'true' and will provision a argocd instance in namespace named as  "gitops". 
 ```bash
 
@@ -79,12 +80,11 @@ oc apply -f bootstrap/argocd.yaml
 
 2. Bootstrap management Cluster configurations
 
-Prerequisites:
+ Prerequisites:
   - Download argocd cli according you OS type from [here](https://github.com/argoproj/argo-cd/releases) 
   - Install argocd cli on you laptop or server where you will issue the command to create the applicationSet, for Linux server, move the argocd cli to /usr/local/bin/argocd
   - Login argocd server with username and password
 
-Here are example commands to create applicationSet for MacOS 
 ```bash
 curl -L  -o /usr/local/bin/argocd  https://github.com/argoproj/argo-cd/releases/download/v2.11.0/argocd-linux-amd64
 chmod  +x /usr/local/bin/argocd
