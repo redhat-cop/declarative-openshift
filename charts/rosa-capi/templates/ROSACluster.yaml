@@ -3,6 +3,7 @@ apiVersion: infrastructure.cluster.x-k8s.io/v1beta2
 kind: ROSACluster
 metadata:
   name: {{ include "rosa-capi.fullname" . }}
+  namespace: {{ default "default" .Values.namespace }}
   labels:
     {{- include "rosa-capi.labels" . | nindent 4 }}
 spec: {}

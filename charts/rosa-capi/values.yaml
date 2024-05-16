@@ -1,5 +1,8 @@
 # Default values for rosa-capi.
 
+# Set the value to tru if you need ArgoCd to be installed on the new cluster
+enable_argocd: false
+
 # nameOverride: my-test-cluster
 fullnameOverride: my-test-cluster
 

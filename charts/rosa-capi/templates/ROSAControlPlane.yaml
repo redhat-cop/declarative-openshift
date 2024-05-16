@@ -3,6 +3,7 @@ apiVersion: controlplane.cluster.x-k8s.io/v1beta2
 kind: ROSAControlPlane
 metadata:
   name: {{ include "rosa-capi.fullname" . }}-control-plane
+  namespace: {{ default "default" .Values.namespace }}
   labels:
     {{- include "rosa-capi.labels" . | nindent 4 }}
 spec:

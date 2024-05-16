@@ -1,0 +1,13 @@
+apiVersion: addons.cluster.x-k8s.io/v1beta1
+kind: ClusterResourceSet
+metadata:
+  name: openshift-gitops-crs
+  namespace: {{ default "default" .Values.namespace }}
+spec:
+  strategy: ApplyOnce
+  clusterSelector:
+    matchLabels:
+      enable_argocd: "yes"
+  resources:
+    - name: openshift-gitops
+      kind: ConfigMap
