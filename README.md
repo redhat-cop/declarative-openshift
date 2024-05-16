@@ -59,9 +59,22 @@ we provide GitOps ways to apply customizations
 1. Bootstrap AgoCD instance on management Cluster 
 **_Note_**: These steps will disable the default argocd instance with setting DISABLE_DEFAULT_ARGOCD_INSTANCE as 'true' and will provision a argocd instance in namespace named as  "gitops". 
 ```bash
+
+#login OCP cluster with your token and API server URL, you can skip this step if already connected with OCP cluster 
+oc login  --token=<your_token> --server=https://api.<clustername>.<domain_name>:6443
+
 oc apply -f bootstrap/subscription.yaml
 oc apply -f bootstrap/cluster-rolebinding.yaml
+
+until [[ $(oc get subscriptions.operators.coreos.com openshift-gitops-operator  -n openshift-gitops-operator -o jsonpath='{.status.conditions[0].message}') == 'all available catalogsources are healthy' ]]
+do
+  echo "Waiting for openshift-gitops-operator subscription ready :"
+  oc get subscriptions.operators.coreos.com openshift-gitops-operator  -n openshift-gitops-operator
+  sleep 10
+done
+
 oc apply -f bootstrap/argocd.yaml
+
  ```
 
 2. Bootstrap management Cluster configurations
@@ -76,7 +89,7 @@ Here are example commands to create applicationSet for MacOS
 curl -L  -o /usr/local/bin/argocd  https://github.com/argoproj/argo-cd/releases/download/v2.11.0/argocd-linux-amd64
 chmod  +x /usr/local/bin/argocd
 
-argocd login openshift-gitops-gitops.$(oc get ingress.config.openshift.io cluster --template={{.spec.domain}}) #input user
+argocd login openshift-gitops-server-gitops.$(oc get ingress.config.openshift.io cluster --template={{.spec.domain}}) #input argoCD username and password 
 
 argocd appset create bootstrap/managementClusterConfigApplicationSet.yaml
  ```
@@ -105,21 +118,6 @@ Run the following command to validate that everything is set up correctly, and r
   oc get deployment -n capa-system capa-controller-manager -o yaml | grep ROSA=true
   oc get deploy capi-controller-manager -n capi-system -o yaml | grep MachinePool=true
 ```
-
-3. **_Optional_**  if you don't want to use GitOps to bootstrap the management cluster, you can follow up below steps to apply customization and configurations manually
-
-Create  rolebindings for CAPA management cluster
-```
-  helm template --release-name rosa-hcp charts/openshift-management | oc apply -f -
-```
-**_Note_**: This step is needed if your mangement cluster is an OpenShift Cluster
-
-Apply CAPI specific configurations needed to support the upcoming workloads:
-
-```
-  helm template charts/capi-management | oc apply -f -
-```
-
 
 ### Quickstart - Simple CAPI / CAPA
 
