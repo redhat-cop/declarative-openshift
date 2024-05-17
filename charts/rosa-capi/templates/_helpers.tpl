@@ -40,7 +40,7 @@ helm.sh/chart: {{ include "rosa-capi.chart" . }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
-rosa-capi/clusternName: {{ include "rosa-capi.name" . }}
+rosa-capi/clusterName: {{ include "rosa-capi.name" . }}
 {{- end }}
 
 {{/*

@@ -1,4 +1,4 @@
-{{- if .Values.enable_argocd }}
+{{- if .Values.enableArgoCD }}
 apiVersion: v1
 kind: ConfigMap
 metadata:

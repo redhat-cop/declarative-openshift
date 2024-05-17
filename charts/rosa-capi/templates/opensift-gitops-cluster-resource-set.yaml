@@ -1,4 +1,4 @@
-{{- if .Values.enable_argocd }}
+{{- if .Values.enableArgoCD }}
 apiVersion: addons.cluster.x-k8s.io/v1beta1
 kind: ClusterResourceSet
 metadata:
@@ -8,7 +8,7 @@ spec:
   strategy: ApplyOnce
   clusterSelector:
     matchLabels:
-      rosa-capi/clusternName: {{ include "rosa-capi.name" . }}
+      rosa-capi/clusterName: {{ include "rosa-capi.name" . }}
   resources:
     - name: openshift-gitops
       kind: ConfigMap
