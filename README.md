@@ -31,21 +31,12 @@ Before applying any of the manifests to create a new cluster(s), the following p
 ### Management Cluster 
 In order to deploy a new OpenShift Cluster using CAPI, you will need a management cluster with the necessary CAPI and CAPA deployments in an operational state. 
 
-#### Install Tools
 To get started, install the following tools on your local machine:
  - [AWS CLI](https://docs.aws.amazon.com/cli/latest/userguide/cli-chap-getting-started.html) 
  - [clusterawsadm](https://github.com/kubernetes-sigs/cluster-api-provider-aws/releases) CLI tool
  - [clusterctl](https://cluster-api.sigs.k8s.io/user/quick-start.html#install-clusterctl) CLI tool
  - kubectl and/or oc CLI tool
  - [helm](https://helm.sh/docs/intro/quickstart/#install-helm)
-
-#### Install a Kubernetes Cluster or Login to existing Cluster
-
-ClusterAPI requires an existing kubernetes cluster accessible via Kubectl that will be transformed into a management cluster by the clusterctl command. 
-
-You can either log in to an existing Openshift Cluster to establish the current-context or launch a local kind cluster for this purpose.
-
-#### Prepare Environment & Management Cluster
 
 Run the following commands to prepare the environment and management cluster:
 ```
@@ -60,7 +51,6 @@ Run the following commands to prepare the environment and management cluster:
   clusterctl init --infrastructure aws
 ```
 
-#### Customize Openshift (Optional)
 Apply customizations provided by this repo:
 
 **_Optional_**: This step is needed if your mangement cluster is an OpenShift Cluster
@@ -68,8 +58,6 @@ Apply customizations provided by this repo:
 ```
   helm template --release-name rosa-hcp charts/openshift-management | oc apply -f -
 ```
-
-#### Validate Management Cluster  
 
 Make sure the CAPI pods are operational before running the next apply. <br />
 This can be done by checking the output of the following commands:
@@ -81,14 +69,13 @@ This can be done by checking the output of the following commands:
   oc get pods -n capi-kubeadm-control-plane-system
 ```
 
-#### Configure CAPI
 Apply CAPI specific configurations needed to support the upcoming workloads:
 
 ```
   helm template charts/capi-management | oc apply -f -
 ```
 
-#### Validate ROSA Specifics
+
 Run the following command to validate that everything is set up correctly, and ready for your first ROSA HCP cluster deployment with CAPI (all commands should return output containing the values in the grep part of the command):
 
 ```
