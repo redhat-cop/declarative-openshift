@@ -36,15 +36,11 @@ Common labels
 {{- define "rosa-capi.labels" -}}
 helm.sh/chart: {{ include "rosa-capi.chart" . }}
 {{ include "rosa-capi.selectorLabels" . }}
-{{- if .Values.enable_argocd }}
-enable_argocd: "yes"
-{{- else }}
-enable_argocd: "no"    
-{{- end }}
 {{- if .Chart.AppVersion }}
 app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
 {{- end }}
 app.kubernetes.io/managed-by: {{ .Release.Service }}
+rosa-capi/clusternName: {{ include "rosa-capi.name" . }}
 {{- end }}
 
 {{/*
