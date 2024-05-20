@@ -88,3 +88,14 @@ rosaControlPlane:
   #   autoscaling:
   #     minReplicas: 1
   #     maxReplicas: 2 
+  #   labels:
+  #     name: value1
+  #   taints:
+  #     key: "key1"
+  #     value: "value1"
+  #     effect: "NoSchedule"
+  #   autoRepair:
+  #   tuningConfigs:
+  #   additionalSecurityGroups:
+  #   providerIDList:
+  #   nodeDrainGracePeriod:      

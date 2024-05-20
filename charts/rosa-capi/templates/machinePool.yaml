@@ -42,4 +42,27 @@ spec:
     {{- range $tag, $value := $machinePool.additionalTags }} 
     {{ $tag }}: {{ $value | quote }}
     {{- end }}    
+  labels:
+    {{- range $name, $value := $machinePool.labels }} 
+    {{ $name }}: {{ $value | quote }}
+    {{- end }}    
+{{- if and $machinePool.taints $machinePool.taints.key $machinePool.taints.value $machinePool.taints.effect }}    
+  taints:
+    {{- toYaml $machinePool.taints | nindent 4 }}
+{{ end }}
+{{- if $machinePool.autoRepair }}    
+  autoRepair: {{ $machinePool.autoRepair }}    
+{{ end }}  
+{{- if $machinePool.tuningConfigs }}    
+  tuningConfigs: {{ $machinePool.tuningConfigs }}    
+{{ end }}
+{{- if $machinePool.additionalSecurityGroups }}    
+  additionalSecurityGroups: {{ $machinePool.additionalSecurityGroups }}    
+{{ end }}
+{{- if $machinePool.providerIDList }}    
+  providerIDList: {{ $machinePool.providerIDList }}    
+{{ end }}
+{{- if $machinePool.nodeDrainGracePeriod }}    
+  nodeDrainGracePeriod: {{ $machinePool.nodeDrainGracePeriod }}    
+{{ end }}
 {{- end }}  
