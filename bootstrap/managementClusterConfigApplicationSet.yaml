@@ -5,27 +5,28 @@ metadata:
  namespace: gitops
 spec:
  generators:
- - git:
-     repoURL: https://github.com/AplphaGO/declarative-openshift.git
-     revision: main
-     files:
-       - path: "charts/**/values.yaml"
+ - list:
+     elements:
+       - appName: capi-management
+       - appName: openshift-management
+      #- appName: rosa-capi
  template:
    metadata:
-     name: "config-{{application.name}}"
+     name: "config-{{ appName }}"
      labels:
-       application: "{{application.name}}"
+       application: "{{ appName }}"
    spec:
      project: default
      source:
        repoURL: https://github.com/AplphaGO/declarative-openshift.git
        targetRevision: main
-       path: charts
+       path: "charts/{{ appName }}"
        helm:
+         releaseName: "{{ appName }}"
          valueFiles:
-           - "{{application.name}}/values.yaml"
+           - "values.yaml"
      destination:
-       server: "{{application.destination}}"
+       server: https://kubernetes.default.svc
      # Sync policy
      syncPolicy:
        automated: # automated sync by default retries failed attempts 5 times with following delays between attempts ( 5s, 10s, 20s, 40s, 80s ); retry controlled using `retry` field.

@@ -1,9 +1,6 @@
 # Default values for rosa-capi.
 
 # nameOverride: my-test-cluster
-application:
-      name: rosa-capi
-      destination: https://kubernetes.default.svc
       
 fullnameOverride: my-test-cluster
 
