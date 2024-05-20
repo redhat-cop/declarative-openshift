@@ -1,0 +1,45 @@
+{{- $clusterVersion := .Values.rosaControlPlane.version }}
+{{- range $key, $machinePool := .Values.rosaControlPlane.machinePools }}
+---
+apiVersion: cluster.x-k8s.io/v1beta1
+kind: MachinePool
+metadata:
+  name: {{ $machinePool.name }}
+spec:
+  clusterName: {{ include "rosa-capi.fullname" $ }}
+{{- if $machinePool.replicas }}
+  replicas: 1
+{{- end }}  
+  template:
+    spec:
+      clusterName: {{ include "rosa-capi.fullname" $ }}
+      bootstrap:
+        dataSecretName: ""
+      infrastructureRef:
+        name: {{ $machinePool.name }}
+        apiVersion: infrastructure.cluster.x-k8s.io/v1beta2
+        kind: ROSAMachinePool
+---
+apiVersion: infrastructure.cluster.x-k8s.io/v1beta2
+kind: ROSAMachinePool
+metadata:
+  name: {{ $machinePool.name }}
+spec:
+  nodePoolName: {{ $machinePool.name }}
+  instanceType: "{{ $machinePool.instanceType }}"
+{{- if $machinePool.availabilityZone }}
+  availabilityZone: {{ $machinePool.availabilityZone  }}
+  {{- else if $machinePool.subnet }}
+  subnet: {{ $machinePool.subnet }}
+{{- end }}
+  version: {{ $clusterVersion }}
+{{- if and (not $machinePool.replicas) $machinePool.autoscaling.minReplicas $machinePool.autoscaling.maxReplicas }}
+  autoscaling:
+    minReplicas: {{ $machinePool.autoscaling.minReplicas }}
+    maxReplicas: {{ $machinePool.autoscaling.maxReplicas }}
+{{- end }} 
+  additionalTags:       
+    {{- range $tag, $value := $machinePool.additionalTags }} 
+    {{ $tag }}: {{ $value | quote }}
+    {{- end }}    
+{{- end }}  

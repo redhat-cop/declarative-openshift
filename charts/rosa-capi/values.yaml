@@ -69,3 +69,22 @@ rosaControlPlane:
 
   region: "us-east-1"
   version: "4.15.0"
+
+  # machinePools:
+  #   #NodePoolName specifies the name of the nodepool in Rosa must be a valid DNS-1035 label, so it must consist of lower case alphanumeric and have a max length of 15
+  # - name: <machine pool Name>
+  #   # subnet where instances of this machine pool should run.
+  #   subnet: <subnet-name>
+  #   # InstanceType specifies the AWS instance type
+  #   instanceType: "m5.xlarge"
+  #   # AvailabilityZone is an optional field specifying the availability zone where instances of this machine pool should run For Multi-AZ clusters, you can create a machine pool in a Single-AZ of your choice.
+  #   availabilityZone: <Zone Name>
+  #   # AdditionalTags are user-defined tags to be added on the underlying EC2 instances associated with this machine pool.
+  #   additionalTags:
+  #     <tagName>: "<value>"  
+  #   # number of replicas
+  #   replicas:  1
+  #   # Autoscaling specifies auto scaling behavior for this MachinePool. required if Replicas is not configured
+  #   autoscaling:
+  #     minReplicas: 1
+  #     maxReplicas: 2 
