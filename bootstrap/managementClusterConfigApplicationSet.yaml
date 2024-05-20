@@ -9,7 +9,7 @@ spec:
      repoURL: https://github.com/AplphaGO/declarative-openshift.git
      revision: main
      files:
-       - path: "managementCluster/**/values.yaml"
+       - path: "charts/**/values.yaml"
  template:
    metadata:
      name: "config-{{application.name}}"
@@ -20,10 +20,10 @@ spec:
      source:
        repoURL: https://github.com/AplphaGO/declarative-openshift.git
        targetRevision: main
-       path: managementCluster/overlays/{{application.name}}
-       #helm:
-       #  valueFiles:
-       #    - managementCluster/overlays/{{application.name}}/values.yaml
+       path: charts
+       helm:
+         valueFiles:
+           - "{{application.name}}/values.yaml"
      destination:
        server: "{{application.destination}}"
      # Sync policy

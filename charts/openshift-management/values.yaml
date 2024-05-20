@@ -1,5 +1,7 @@
 # Default values for openshift-management.
-
+application:
+      name: openshift-management
+      destination: https://kubernetes.default.svc
 #capa:
 #  namespace: "capa-system"
 

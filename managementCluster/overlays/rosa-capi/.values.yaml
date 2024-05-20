@@ -1,5 +1,0 @@
-# Default values for rosa-capi.
-
-application:
-      name: rosa-capi
-      destination: https://kubernetes.default.svc

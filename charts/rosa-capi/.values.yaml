@@ -1,6 +1,10 @@
 # Default values for rosa-capi.
 
 # nameOverride: my-test-cluster
+application:
+      name: rosa-capi
+      destination: https://kubernetes.default.svc
+      
 fullnameOverride: my-test-cluster
 
 # Generate a token from https://console.redhat.com/openshift/token/rosa and paste it here
