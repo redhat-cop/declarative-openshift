@@ -26,7 +26,8 @@ Before applying any of the manifests to create a new cluster(s), the following p
  - A valid account for [Red Hat Hybrid Cloud Console](https://console.redhat.com/openshift/overview)
  - [Steps 1-3 here](https://docs.aws.amazon.com/rosa/latest/userguide/getting-started-hcp.html#getting-started-hcp-step-1) to create the necessary VPC configuration and account and operator roles. 
 
-**_NOTE_**: _Steps 1-3 from above will soon be replaced with declarative content within this repo. More to come on this soon..._
+**_NOTE_**: _Steps 1-3 from above prerequisites,like network,account roles and operator roles  can be provision by integrated tools like [ACK](https://aws.amazon.com/blogs/containers/aws-controllers-for-kubernetes-ack/), [Terraform](https://www.terraform.io/), [Ansible](https://www.ansible.com/) and  [crossplane](https://docs.crossplane.io/) etc. please refer to [here](./integrations/README.md) for more details. 
+
 
 ### Management Cluster 
 In order to deploy a new OpenShift Cluster using CAPI, you will need a management cluster with the necessary CAPI and CAPA deployments in an operational state. 
@@ -53,11 +54,42 @@ Run the following commands to prepare the environment and management cluster:
 
 Apply customizations provided by this repo:
 
-**_Optional_**: This step is needed if your mangement cluster is an OpenShift Cluster
+we provide GitOps ways to apply customizations
 
-```
-  helm template --release-name rosa-hcp charts/openshift-management | oc apply -f -
-```
+1. Bootstrap AgoCD instance on management Cluster
+
+**_Note_**: These steps will disable the default argocd instance with setting DISABLE_DEFAULT_ARGOCD_INSTANCE as 'true' and will provision a argocd instance in namespace named as  "gitops". As the default openshift-gitops instance is managed by CRD GitopsService, which does not allow us to customize argcd instance like  adding "resourceTrackingMethod: annotation " and resourceHealthChecks for integrations like crossplane resources.
+
+```bash
+#login OCP cluster with your token and API server URL, you can skip this step if already connected with OCP cluster 
+oc login  --token=<your_token> --server=https://api.<clustername>.<domain_name>:6443
+
+oc apply -f bootstrap/subscription.yaml
+oc apply -f bootstrap/cluster-rolebinding.yaml
+
+until [[ $(oc get subscriptions.operators.coreos.com openshift-gitops-operator  -n openshift-gitops-operator -o jsonpath='{.status.conditions[0].message}') == 'all available catalogsources are healthy' ]]
+do
+  echo "Waiting for openshift-gitops-operator subscription ready :"
+  oc get subscriptions.operators.coreos.com openshift-gitops-operator  -n openshift-gitops-operator
+  sleep 10
+done
+
+oc apply -f bootstrap/argocd.yaml
+
+ ```
+
+2. Bootstrap management Cluster configurations
+
+```bash
+oc apply -f bootstrap/managementClusterConfigApplicationSet.yaml
+ ```
+
+the applicationSet will create below resources
+
+![customized managementCluster](./pics/managementCluster.png)
+
+**_Optional_**: openshift-management application is needed if your mangement cluster is an OpenShift Cluster
+
 
 Make sure the CAPI pods are operational before running the next apply. <br />
 This can be done by checking the output of the following commands:
@@ -69,13 +101,6 @@ This can be done by checking the output of the following commands:
   oc get pods -n capi-kubeadm-control-plane-system
 ```
 
-Apply CAPI specific configurations needed to support the upcoming workloads:
-
-```
-  helm template charts/capi-management | oc apply -f -
-```
-
-
 Run the following command to validate that everything is set up correctly, and ready for your first ROSA HCP cluster deployment with CAPI (all commands should return output containing the values in the grep part of the command):
 
 ```
@@ -83,7 +108,6 @@ Run the following command to validate that everything is set up correctly, and r
   oc get deployment -n capa-system capa-controller-manager -o yaml | grep ROSA=true
   oc get deploy capi-controller-manager -n capi-system -o yaml | grep MachinePool=true
 ```
-
 
 ### Quickstart - Simple CAPI / CAPA
 
@@ -109,6 +133,10 @@ Once the cluster shows state "READY" as "true", the cluster is available to acce
   export KUBECONFIG=/tmp/rosa-capi.kubeconfig
   oc get nodes
 ```
+
+### GitOps -  With the Integration of Crossplane for HCP ROSA Provision 
+**_coming soon..._**
+
 
 #### Troubleshooting
 

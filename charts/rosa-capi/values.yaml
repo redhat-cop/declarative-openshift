@@ -7,6 +7,7 @@ enableArgoCD: false
 namespace: default
 
 # nameOverride: my-test-cluster
+      
 fullnameOverride: my-test-cluster
 
 # Generate a token from https://console.redhat.com/openshift/token/rosa and paste it here
