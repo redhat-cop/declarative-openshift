@@ -58,9 +58,9 @@ we provide GitOps ways to apply customizations
 
 1. Bootstrap AgoCD instance on management Cluster
 
-**_Note_**: These steps will disable the default argocd instance with setting DISABLE_DEFAULT_ARGOCD_INSTANCE as 'true' and will provision a argocd instance in namespace named as  "gitops". 
-```bash
+**_Note_**: These steps will disable the default argocd instance with setting DISABLE_DEFAULT_ARGOCD_INSTANCE as 'true' and will provision a argocd instance in namespace named as  "gitops". As the default openshift-gitops instance is managed by CRD GitopsService, which does not allow us to customize argcd instance like  adding "resourceTrackingMethod: annotation " and resourceHealthChecks for integrations like crossplane resources.
 
+```bash
 #login OCP cluster with your token and API server URL, you can skip this step if already connected with OCP cluster 
 oc login  --token=<your_token> --server=https://api.<clustername>.<domain_name>:6443
 
@@ -80,18 +80,8 @@ oc apply -f bootstrap/argocd.yaml
 
 2. Bootstrap management Cluster configurations
 
- Prerequisites:
-  - Download argocd cli according you OS type from [here](https://github.com/argoproj/argo-cd/releases) 
-  - Install argocd cli on you laptop or server where you will issue the command to create the applicationSet, for Linux server, move the argocd cli to /usr/local/bin/argocd
-  - Login argocd server with username and password
-
 ```bash
-curl -L  -o /usr/local/bin/argocd  https://github.com/argoproj/argo-cd/releases/download/v2.11.0/argocd-linux-amd64
-chmod  +x /usr/local/bin/argocd
-
-argocd login openshift-gitops-server-gitops.$(oc get ingress.config.openshift.io cluster --template={{.spec.domain}}) #input argoCD username and password 
-
-argocd appset create bootstrap/managementClusterConfigApplicationSet.yaml
+oc apply -f bootstrap/managementClusterConfigApplicationSet.yaml
  ```
 
 the applicationSet will create below resources
