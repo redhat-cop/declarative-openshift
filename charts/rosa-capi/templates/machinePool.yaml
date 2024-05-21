@@ -1,3 +1,4 @@
+{{- include "validate.rosaControlPlane" . }}
 {{- $clusterVersion := .Values.rosaControlPlane.version }}
 {{- range $key, $machinePool := .Values.rosaControlPlane.machinePools }}
 ---
@@ -64,5 +65,5 @@ spec:
 {{ end }}
 {{- if $machinePool.nodeDrainGracePeriod }}    
   nodeDrainGracePeriod: {{ $machinePool.nodeDrainGracePeriod }}    
-{{ end }}
+{{- end }}
 {{- end }}  

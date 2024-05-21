@@ -80,22 +80,39 @@ rosaControlPlane:
   #   # AvailabilityZone is an optional field specifying the availability zone where instances of this machine pool should run For Multi-AZ clusters, you can create a machine pool in a Single-AZ of your choice.
   #   availabilityZone: <Zone Name>
   #   # AdditionalTags are user-defined tags to be added on the underlying EC2 instances associated with this machine pool.
+  #   # map[string]string (Optional) 
   #   additionalTags:
   #     <tagName>: "<value>"  
-  #   # number of replicas
+  #   # Number of replicas
   #   replicas:  1
   #   # Autoscaling specifies auto scaling behavior for this MachinePool. required if Replicas is not configured
   #   autoscaling:
   #     minReplicas: 1
-  #     maxReplicas: 2 
+  #     maxReplicas: 2
+  #   # Labels specifies labels for the Kubernetes node objects
+  #   # map[string]string (Optional)   
   #   labels:
   #     name: value1
+  #   # Taints specifies the taints to apply to the nodes of the machine pool
+  #   # []RosaTaint (Optional) https://cluster-api-aws.sigs.k8s.io/crd/#infrastructure.cluster.x-k8s.io/v1beta2.RosaTaint  
   #   taints:
   #     key: "key1"
   #     value: "value1"
   #     effect: "NoSchedule"
+  #   # AutoRepair specifies whether health checks should be enabled for machines in the NodePool. The default is false.
+  #   # bool (Optional)
   #   autoRepair:
+  #   # TuningConfigs specifies the names of the tuning configs to be applied to this MachinePool. Tuning configs must already exist.
+  #   # []string (Optional)
   #   tuningConfigs:
+  #   # AdditionalSecurityGroups is an optional set of security groups to associate with all node instances of the machine pool.
+  #   # []string (Optional)
   #   additionalSecurityGroups:
+  #   # ProviderIDList contain a ProviderID for each machine instance that’s currently managed by this machine pool.
+  #   # []string (Optional)
   #   providerIDList:
+  #   # NodeDrainGracePeriod is grace period for how long Pod Disruption Budget-protected workloads will be respected during upgrades. 
+  #   # After this grace period, any workloads protected by Pod Disruption Budgets that have not been successfully drained from a node will be forcibly evicted.
+  #   # Valid values are from 0 to 1 week(10080m|168h) . 0 or empty value means that the MachinePool can be drained without any time limitation.
+  #   # https://pkg.go.dev/k8s.io/apimachinery/pkg/apis/meta/v1#Duration
   #   nodeDrainGracePeriod:      
