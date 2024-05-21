@@ -6,6 +6,7 @@ metadata:
   namespace: {{ default "default" .Values.namespace }}
   labels:
     {{- include "rosa-capi.labels" . | nindent 4 }}
+    argoCDChart: enabled
 spec:
   clusterNetwork:
     pods:

@@ -1,0 +1,34 @@
+apiVersion: addons.cluster.x-k8s.io/v1alpha1
+kind: HelmChartProxy
+metadata:
+  name: argocd
+spec:
+  clusterSelector:
+    matchLabels:
+      argoCDChart: enabled
+  repoURL: https://redhat-cop.github.io/helm-charts
+  chartName: gitops-operator
+  options:
+    waitForJobs: true
+    wait: true
+    timeout: 5m
+    install:
+      createNamespace: true
+  valuesTemplate: |
+    name: argocd
+
+    # this is for argo type deployments of this chart (set to true)
+    ignoreHelmHooks: false
+
+    # add to this list to deploy team instances to these namespaces
+    namespaces:
+    - openshift-gitops
+
+    # operator manages upgrades
+    operator:
+      channel: latest
+      installPlanApproval: Automatic
+      name: openshift-gitops-operator
+      sourceName: redhat-operators
+      sourceNamespace: openshift-marketplace
+      disableDefaultArgoCD: true
