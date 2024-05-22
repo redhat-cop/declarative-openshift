@@ -1,4 +1,4 @@
-{{- include "validate.rosaControlPlane" . }}
+{{- include "validate.rosaControlPlane.machinepools" . }}
 {{- $clusterVersion := .Values.rosaControlPlane.version }}
 {{- range $key, $machinePool := .Values.rosaControlPlane.machinePools }}
 ---

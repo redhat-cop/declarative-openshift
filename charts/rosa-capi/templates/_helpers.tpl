@@ -63,9 +63,9 @@ Create the name of the service account to use
 {{- end }}
 
 {{/*
-Add validations
+Add MachinePool validations  
 */}}
-{{- define "validate.rosaControlPlane" -}}
+{{- define "validate.rosaControlPlane.machinepools" -}}
 {{- $errors := list -}}
 {{- range $key, $machinePool := .Values.rosaControlPlane.machinePools }}
   {{- if $machinePool.name }}
