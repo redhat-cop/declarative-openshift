@@ -50,19 +50,19 @@ spec:
 {{- if and $machinePool.taints $machinePool.taints.key $machinePool.taints.value $machinePool.taints.effect }}    
   taints:
     {{- toYaml $machinePool.taints | nindent 4 }}
-{{ end }}
+{{- end }}
 {{- if $machinePool.autoRepair }}    
-  autoRepair: {{ $machinePool.autoRepair }}    
-{{ end }}  
-{{- if $machinePool.tuningConfigs }}    
-  tuningConfigs: {{ $machinePool.tuningConfigs }}    
-{{ end }}
+  autoRepair: {{ $machinePool.autoRepair }}
+{{- end }}
+{{- if $machinePool.tuningConfigs }}
+  tuningConfigs: {{- toYaml $machinePool.tuningConfigs | nindent 4 }}
+{{- end }}
 {{- if $machinePool.additionalSecurityGroups }}    
-  additionalSecurityGroups: {{ $machinePool.additionalSecurityGroups }}    
-{{ end }}
+  additionalSecurityGroups: {{- toYaml $machinePool.additionalSecurityGroups | nindent 4 }}
+{{- end }}
 {{- if $machinePool.providerIDList }}    
-  providerIDList: {{ $machinePool.providerIDList }}    
-{{ end }}
+  providerIDList: {{- toYaml $machinePool.providerIDList | nindent 4 }}
+{{- end }}
 {{- if $machinePool.nodeDrainGracePeriod }}    
   nodeDrainGracePeriod: {{ $machinePool.nodeDrainGracePeriod }}    
 {{- end }}
