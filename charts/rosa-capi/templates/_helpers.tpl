@@ -61,3 +61,31 @@ Create the name of the service account to use
 {{- default "default" .Values.serviceAccount.name }}
 {{- end }}
 {{- end }}
+
+{{/*
+Add MachinePool validations  
+*/}}
+{{- define "validate.rosaControlPlane.machinepools" -}}
+{{- $errors := list -}}
+{{- range $key, $machinePool := .Values.rosaControlPlane.machinePools }}
+  {{- if $machinePool.name }}
+    {{- if not (regexMatch "^[a-z0-9-]+$" $machinePool.name) }}
+      {{- $errors = append $errors (printf "MachinePool Name \"%s\" must consist of lowercase alphanumeric characters." $machinePool.name) }}
+    {{- end }}
+    {{- if gt (len $machinePool.name) 15 }}
+      {{- $errors = append $errors (printf "MachinePool Name \"%s\" must not exceed 15 characters in length." $machinePool.name) }}
+    {{- end }}
+  {{- end }}
+  {{- $hasAutoscaling := or (and $machinePool.autoscaling $machinePool.autoscaling.minReplicas) (and $machinePool.autoscaling $machinePool.autoscaling.maxReplicas) -}}
+  {{- if and $hasAutoscaling $machinePool.replicas }}
+    {{- $errors = append $errors (printf "Autoscaling and Replicas are mutually exclusive. Error in MachinePool %s" $machinePool.name) -}}
+  {{- end }}
+  {{- if and (not $machinePool.replicas) (not $hasAutoscaling) }}
+    {{- $errors = append $errors (printf "Either Replicas or Autoscaling must be configured in MachinePool %s" $machinePool.name) -}}
+  {{- end }}
+{{- end }}
+
+{{- if $errors }}
+  {{- fail (printf "Validation failed with the following errors:\n%s" (join "\n" $errors)) }}
+{{- end }}
+{{- end }} 
