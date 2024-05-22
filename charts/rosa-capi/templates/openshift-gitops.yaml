@@ -1,0 +1,215 @@
+{{- if .Values.enableArgoCD }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: openshift-gitops
+  namespace: {{ default "default" .Values.namespace }}
+data:
+  argocd.yaml: |-
+    apiVersion: rbac.authorization.k8s.io/v1
+    kind: ClusterRole
+    metadata:
+      labels:
+        app.kubernetes.io/component: application-controller
+        app.kubernetes.io/name: argocd-application-controller
+        app.kubernetes.io/part-of: openshift-gitops
+      name: argocd-application-controller
+    rules:
+    - apiGroups:
+      - '*'
+      resources:
+      - '*'
+      verbs:
+      - '*'
+    - nonResourceURLs:
+      - '*'
+      verbs:
+      - '*'
+    ---
+    apiVersion: rbac.authorization.k8s.io/v1
+    kind: ClusterRole
+    metadata:
+      labels:
+        app.kubernetes.io/component: argocd-server
+        app.kubernetes.io/name: gitops-argocd-server
+        app.kubernetes.io/part-of: openshift-gitops
+      name: gitops-argocd-server
+    rules:
+    - apiGroups:
+      - '*'
+      resources:
+      - '*'
+      verbs:
+      - delete  # supports deletion a live object in UI
+      - get     # supports viewing live object manifest in UI
+      - patch   # supports `argocd app patch`
+    - apiGroups:
+      - ""
+      resources:
+      - events
+      verbs:
+      - list    # supports listing events in UI
+    - apiGroups:
+      - ""
+      resources:
+      - pods
+      - pods/log
+      verbs:
+      - get     # supports viewing pod logs from UI
+    ---
+    apiVersion: rbac.authorization.k8s.io/v1
+    kind: ClusterRoleBinding
+    metadata:
+      labels:
+        app.kubernetes.io/component: application-controller
+        app.kubernetes.io/name: argocd-application-controller
+        app.kubernetes.io/part-of: openshift-gitops
+      name: argocd-application-controller
+    roleRef:
+      apiGroup: rbac.authorization.k8s.io
+      kind: ClusterRole
+      name: argocd-application-controller
+    subjects:
+    - kind: ServiceAccount
+      name: argocd-argocd-application-controller
+      namespace: openshift-gitops
+    ---
+    apiVersion: rbac.authorization.k8s.io/v1
+    kind: ClusterRoleBinding
+    metadata:
+      labels:
+        app.kubernetes.io/component: argocd-server
+        app.kubernetes.io/name: argocd-server
+        app.kubernetes.io/part-of: openshift-gitops
+      name: argocd-server
+    roleRef:
+      apiGroup: rbac.authorization.k8s.io
+      kind: ClusterRole
+      name: gitops-argocd-server
+    subjects:
+    - kind: ServiceAccount
+      name: argocd-argocd-server
+      namespace: openshift-gitops
+    ---
+    apiVersion: operators.coreos.com/v1alpha1
+    kind: Subscription
+    metadata:
+      name: openshift-gitops-operator
+      namespace: openshift-operators
+    spec:
+      channel: latest
+      installPlanApproval: Automatic
+      name: openshift-gitops-operator
+      source: "redhat-operators"
+      sourceNamespace: "openshift-marketplace"
+      config:
+        env:
+        - name: DISABLE_DEFAULT_ARGOCD_INSTANCE
+          value:  "true"
+        - name: ARGOCD_CLUSTER_CONFIG_NAMESPACES
+          value: "openshift-gitops"
+    ---
+    # Source: gitops-operator/templates/crd-reader.yaml
+    apiVersion: rbac.authorization.k8s.io/v1
+    kind: ClusterRole
+    metadata:
+      name: crd-reader
+    rules:
+    - apiGroups:
+      - apiextensions.k8s.io
+      resources:
+      - 'customresourcedefinitions'
+      verbs:
+      - get
+      - list
+    ---
+    # Source: gitops-operator/templates/crd-reader.yaml
+    apiVersion: rbac.authorization.k8s.io/v1
+    kind: ClusterRoleBinding
+    metadata:
+      name: crd-reader-binding
+    roleRef:
+      apiGroup: rbac.authorization.k8s.io
+      kind: ClusterRole
+      name: crd-reader
+    subjects:
+    - kind: ServiceAccount
+      name: default
+      namespace: openshift-gitops
+    ---
+    # Source: gitops-operator/templates/wait-for-crd.yaml
+    apiVersion: v1
+    kind: Pod
+    metadata:
+      name: cluster-check 
+      namespace: openshift-gitops
+    spec:
+      containers:
+      - name: crd-check 
+        image: quay.io/openshift/origin-cli:latest
+        imagePullPolicy: IfNotPresent
+        command: ['sh', '-c', 'while [ true ]; do oc get crd argocds.argoproj.io applications.argoproj.io appprojects.argoproj.io; if [ $? -eq 0 ]; then break; fi ; sleep 5s; done']
+      restartPolicy: Never
+      terminationGracePeriodSeconds: 0
+      serviceAccount: default
+      serviceAccountName: default
+    ---
+    # Source: gitops-operator/templates/argocd-cr.yaml
+    apiVersion: argoproj.io/v1alpha1
+    kind: AppProject
+    metadata:
+      name: default
+      annotations:
+        "helm.sh/hook": post-install,post-upgrade
+        "helm.sh/hook-weight": "25"
+      namespace: openshift-gitops
+    spec:
+      clusterResourceWhitelist:
+        - group: '*'
+          kind: '*'
+      destinations:
+        - namespace: '*'
+          server: '*'
+      sourceRepos:
+        - '*'
+    status: {}
+    ---
+    # Source: gitops-operator/templates/argocd-cr.yaml
+    apiVersion: argoproj.io/v1beta1
+    kind: ArgoCD
+    metadata:
+      name: argocd
+      labels:
+        app: argocd
+      namespace: openshift-gitops
+    spec:
+      applicationInstanceLabelKey: rht-gitops.com/openshift-gitops
+      applicationSet: {}
+      notifications:
+        enabled: true
+      rbac:
+        defaultPolicy: role:admin
+        policy: |
+          g, system:cluster-admins, role:admin
+        scopes: '[groups]'
+      repositoryCredentials: null
+      resourceExclusions: |
+        - apiGroups:
+            - tekton.dev
+          clusters:
+            - '*'
+          kinds:
+            - TaskRun
+            - PipelineRun
+      server:
+        ingress:
+          enabled: false
+        route:
+          enabled: true
+          tls:
+            termination: reencrypt
+      sso:
+        dex:
+          openShiftOAuth: true
+        provider: dex
+{{- end }}
