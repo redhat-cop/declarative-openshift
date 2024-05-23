@@ -1,0 +1,71 @@
+{{- if .Values.enableACM }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: acm
+  namespace: {{ default "default" .Values.namespace }}
+data:
+  acm.yaml: |-
+    apiVersion: v1
+    kind: Namespace
+    metadata:
+      name: open-cluster-management
+    spec: {}
+    status: {}
+    ---
+    apiVersion: rbac.authorization.k8s.io/v1
+    kind: ClusterRoleBinding
+    metadata:
+      annotations:
+        argocd.argoproj.io/sync-wave: "55"
+      name: open-cluster-management:subscription-admin
+    roleRef:
+      apiGroup: rbac.authorization.k8s.io
+      kind: ClusterRole
+      name: open-cluster-management:subscription-admin
+    subjects:
+    - apiGroup: rbac.authorization.k8s.io
+      kind: User
+      name: kube:admin
+    - apiGroup: rbac.authorization.k8s.io
+      kind: User
+      name: system:admin
+    - kind: ServiceAccount
+      name: openshift-gitops-argocd-application-controller
+      namespace: openshift-gitops
+    - apiGroup: rbac.authorization.k8s.io
+      kind: User
+      name: cluster-admin
+    ---
+    apiVersion: operator.open-cluster-management.io/v1
+    kind: MultiClusterHub
+    metadata:
+      annotations:
+        argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+        argocd.argoproj.io/sync-wave: "50"
+      name: multiclusterhub
+      namespace: open-cluster-management
+    spec: {}
+    ---
+    apiVersion: operators.coreos.com/v1
+    kind: OperatorGroup
+    metadata:
+      name: open-cluster-management
+      namespace: open-cluster-management
+    spec:
+      targetNamespaces:
+      - open-cluster-management
+      upgradeStrategy: Default
+    ---
+    apiVersion: operators.coreos.com/v1alpha1
+    kind: Subscription
+    metadata:
+      name: advanced-cluster-management
+      namespace: open-cluster-management
+    spec:
+      channel: release-2.10
+      installPlanApproval: Automatic
+      name: advanced-cluster-management
+      source: redhat-operators
+      sourceNamespace: openshift-marketplace
+{{- end }}

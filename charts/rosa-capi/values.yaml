@@ -3,6 +3,9 @@
 # Set the value to true if you need ArgoCd to be installed on the new cluster
 enableArgoCD: false
 
+# Set the value to true if you need ACM to be installed on the new cluster
+enableACM: false
+
 # Set namespace where you want the cluster to be installed
 namespace: default
 
