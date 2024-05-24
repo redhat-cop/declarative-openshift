@@ -1,0 +1,18 @@
+apiVersion: ec2.aws.upbound.io/v1beta1
+kind: Subnet
+metadata:
+  annotations:
+    argocd.argoproj.io/sync-wave: "5"
+  labels:
+    crossplane/subnet: {{ .Values.cluster_name }}-private-subnet
+  name: {{ .Values.cluster_name }}-private-subnet
+spec:
+  forProvider:
+    tags:
+      Name: {{ .Values.cluster_name }}-private
+    availabilityZone: {{ .Values.availabilityZone }}
+    cidrBlock: {{ .Values.private_subnet_cidrBlock }}
+    region: {{ .Values.region }}
+    vpcIdSelector:
+      matchLabels:
+        crossplane/vpc: {{ .Values.cluster_name }}

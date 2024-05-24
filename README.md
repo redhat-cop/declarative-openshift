@@ -26,7 +26,8 @@ Before applying any of the manifests to create a new cluster(s), the following p
  - A valid account for [Red Hat Hybrid Cloud Console](https://console.redhat.com/openshift/overview)
  - [Steps 1-3 here](https://docs.aws.amazon.com/rosa/latest/userguide/getting-started-hcp.html#getting-started-hcp-step-1) to create the necessary VPC configuration and account and operator roles. 
 
-**_NOTE_**: _Steps 1-3 from above will soon be replaced with declarative content within this repo. More to come on this soon..._
+**_NOTE_**: _Steps 1-3 from above prerequisites,like network,account roles and operator roles  can be provision by integrated tools like [ACK](https://aws.amazon.com/blogs/containers/aws-controllers-for-kubernetes-ack/), [Terraform](https://www.terraform.io/), [Ansible](https://www.ansible.com/) and  [crossplane](https://docs.crossplane.io/) etc. please refer to [here](./integrations/README.md) for more details. 
+
 
 ### Management Cluster 
 In order to deploy a new OpenShift Cluster using CAPI, you will need a management cluster with the necessary CAPI and CAPA deployments in an operational state. 
@@ -53,11 +54,52 @@ Run the following commands to prepare the environment and management cluster:
 
 Apply customizations provided by this repo:
 
-**_Optional_**: This step is needed if your mangement cluster is an OpenShift Cluster
+we provide two ways to apply customizations,i.e GitOps and manually.
 
+1. Bootstrap AgoCD instance on management Cluster 
+```bash
+export gitops_repo=https://github.com/<your_orgOrName>/declarative-openshift.git #<your newly created repo>
+export cluster_name=managementCluster #<your management cluster name >
+export cluster_base_domain=$(oc get ingress.config.openshift.io cluster --template={{.spec.domain}} | sed -e "s/^apps.//")
+export platform_base_domain=${cluster_base_domain#*.}
+oc apply -f .bootstrap/subscription.yaml
+oc apply -f .bootstrap/cluster-rolebinding.yaml
+envsubst < .bootstrap/argocd.yaml | oc apply -f -
+ ```
+
+2. Bootstrap management Cluster configurations
+
+Replace your values in [.bootstrap/rosa-hcp-application/values.yaml](.bootstrap/rosa-hcp-application/values.yaml)
+```yaml
+application:
+  name: rosa-hcp-applications  # leave it as default
+  namespace: gitops  # namespace which you provision the argoCD instance with envsubst < .bootstrap/argocd.yaml | oc apply -f -
+  repoURL: <YOUR_REPO_URL>  # For example, https://github.com/AplphaGO/declarative-openshift.git
+  targetRevision: <BRANCH_NAME> #To Specify which branch you want use, For example,dev,test,prod,HEAD,etc.
+  path: managementCluster # leave it as default
 ```
-  helm template --release-name rosa-hcp charts/openshift-management | oc apply -f -
+
+**_Optional_**: if you use main branch as default
+Replace your targetRevision values in charts/argocd-app-of-app/values.yaml if you are not use the main branch as default.
+```yaml
+   ...
+    source:
+      repoURL: ${INFRA_GITOPS_REPO} 
+      targetRevision: main #To Specify which branch you want use,if the default is not main
+   ...
 ```
+
+Bootstrap the application
+```bash
+helm template .bootstrap/rosa-hcp-application   -f .bootstrap/rosa-hcp-application/values.yaml | oc apply -f -
+```
+
+the bootstrap rosa-hcp-application will create below resources
+
+![customized managementCluster](./pics/managementCluster.png)
+
+**_Optional_**: openshift-management application is needed if your mangement cluster is an OpenShift Cluster
+
 
 Make sure the CAPI pods are operational before running the next apply. <br />
 This can be done by checking the output of the following commands:
@@ -69,19 +111,26 @@ This can be done by checking the output of the following commands:
   oc get pods -n capi-kubeadm-control-plane-system
 ```
 
-Apply CAPI specific configurations needed to support the upcoming workloads:
-
-```
-  helm template charts/capi-management | oc apply -f -
-```
-
-
 Run the following command to validate that everything is set up correctly, and ready for your first ROSA HCP cluster deployment with CAPI (all commands should return output containing the values in the grep part of the command):
 
 ```
   oc get crd | grep rosa
   oc get deployment -n capa-system capa-controller-manager -o yaml | grep ROSA=true
   oc get deploy capi-controller-manager -n capi-system -o yaml | grep MachinePool=true
+```
+
+3. **_Optional_**  if you don't want to use GitOps to bootstrap the management cluster, you can follow up below steps to apply customization and configurations manually
+
+Create  rolebindings for CAPA management cluster
+```
+  helm template --release-name rosa-hcp charts/openshift-management | oc apply -f -
+```
+**_Note_**: This step is needed if your mangement cluster is an OpenShift Cluster
+
+Apply CAPI specific configurations needed to support the upcoming workloads:
+
+```
+  helm template charts/capi-management | oc apply -f -
 ```
 
 
@@ -109,6 +158,10 @@ Once the cluster shows state "READY" as "true", the cluster is available to acce
   export KUBECONFIG=/tmp/rosa-capi.kubeconfig
   oc get nodes
 ```
+
+### GitOps -  With the Integration of Crossplane for HCP ROSA Provision 
+**_coming soon..._**
+
 
 #### Troubleshooting
 

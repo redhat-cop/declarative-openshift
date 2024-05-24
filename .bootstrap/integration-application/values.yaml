@@ -1,0 +1,6 @@
+application:
+    name: integration-applications
+    namespace: gitops
+    repoURL: <YOUR_REPO_URL>
+    targetRevision: <BRANCH_NAME>  
+    path: integrations 

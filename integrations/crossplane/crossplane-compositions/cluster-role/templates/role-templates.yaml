@@ -1,0 +1,50 @@
+{{- $oidcPath := .Values.oidc_path }}
+{{- $awsAccountId := .Values.aws_account_id }}
+{{- $clusterName := .Values.cluster_name }}
+
+{{- range $key,$val := .Values.roles }}
+---
+apiVersion: iam.aws.upbound.io/v1beta1
+kind: Role
+metadata:
+  annotations:
+    argocd.argoproj.io/sync-wave: "6"
+  name:  {{ $clusterName }}-{{ $val.role_name }}
+spec:
+  forProvider:
+    managedPolicyArns:
+       - {{ $val.managedPolicyArns }}
+    tags:
+      red-hat-managed: "true"
+      rosa_hcp_policies: "true"
+      rosa_managed_policies: "true" 
+      operator_namespace: {{ $val.operator_namespace }}
+      operator_name: {{ $val.operator_name }}
+    assumeRolePolicy: |
+      {
+        "Version": "2012-10-17",
+        "Statement": [
+          {
+            "Action": [
+              "sts:AssumeRoleWithWebIdentity"
+            ],
+            "Effect": "Allow",
+            "Condition": {
+              "StringEquals": {
+                "oidc.op1.openshiftapps.com/{{ $oidcPath }}:sub": [
+                  {{- $saLen := len $val.service_account }}
+                  {{- range $idx,$sa := $val.service_account }}
+                  "system:serviceaccount:{{ $val.operator_namespace }}:{{ . }}"
+                  {{- if ne (add $idx 1) $saLen }},{{- end }}
+                  {{- end }}
+                ]
+              }
+            },
+            "Principal": {
+              "Federated": "arn:aws:iam::{{ $awsAccountId }}:oidc-provider/oidc.op1.openshiftapps.com/{{ $oidcPath }}"
+            }
+          }
+        ]
+      }
+{{- end }}
+      
